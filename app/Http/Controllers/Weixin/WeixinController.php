@@ -33,14 +33,14 @@ class WeixinController extends Controller
 
 		if($MsgType == 'event'){
 				if($Event == 'subscribe'){
-						$xml="<xml>
-  <ToUserName><![CDATA[$FromUserName]]></ToUserName>
-  <FromUserName><![CDATA[$ToUserName]]></FromUserName>
-  <CreateTime>".time()."</CreateTime>
-  <MsgType><![CDATA[text]]></MsgType>
-  <Event><![CDATA[欢迎,关注]]></Event>
-</xml>";
-
+					$xml="<xml>
+						<ToUserName><![CDATA[$FromUserName]]></ToUserName>
+ 						 <FromUserName><![CDATA[$ToUserName]]></FromUserName>
+ 						 <CreateTime>".time()."</CreateTime>
+ 						 <MsgType><![CDATA[text]]></MsgType>
+  						 <Event><![CDATA[欢迎,关注]]></Event>
+					</xml>";
+					echo $xml;
 				}
 		}
 	}
