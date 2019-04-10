@@ -31,15 +31,15 @@ class WeixinController extends Controller
         if($token){
             return $token;
         }else{
-            $url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxb8bc960e43858757&secret=8ba592f5b60366f44c762fb86df47b89';
+            $url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid='.env('WX_APPID').'&secret='.env('WX_SECRET');
 
             $response = file_get_contents($url);
 
             $arr = json_decode($response,true);
             //缓存 access_token
-            Redis::set($key,$arr['access_toke']);
+            Redis::set($key,$arr['access_token']);
             Redis::expire($key,3600); //缓存一小时
-            $token = $arr['access_toke'];
+            $token = $arr['access_token'];
         }
         return $token;
 	}
