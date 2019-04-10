@@ -21,3 +21,6 @@ Route::post('valid','Weixin\WeixinController@wxEvent');
 
 //access_token
 Route::get('/weixin/access_token','Weixin\WeixinController@getAccessToken');
+
+//获取用户信息
+Route::get('userInfo','Weixin\WeixinController@userinfo');
