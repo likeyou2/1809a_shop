@@ -38,7 +38,7 @@ class WeixinController extends Controller
   <FromUserName><![CDATA[$ToUserName]]></FromUserName>
   <CreateTime>".time()."</CreateTime>
   <MsgType><![CDATA[text]]></MsgType>
-  <Event><![CDATA[欢迎,$info['nickname']关注]]></Event>
+  <Event><![CDATA[欢迎,关注]]></Event>
 </xml>";
 
 				}
