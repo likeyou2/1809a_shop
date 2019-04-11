@@ -27,26 +27,54 @@ class WeixinController extends Controller
 		$CreateTime=$objxml->CreateTime;     //时间
 		$MsgType=$objxml->MsgType;        //消息类型
 		$Event=$objxml->Event;          //事件
-		//调用用户的基本信息方法  返回用户信息
-		$info=$this->userinfo($FromUserName);
 
 
-		if($MsgType == 'event'){
-				if($Event == 'subscribe'){
-					$xml="<xml>
-						<ToUserName><![CDATA[$FromUserName]]></ToUserName>
- 						 <FromUserName><![CDATA[$ToUserName]]></FromUserName>
- 						 <CreateTime>time()</CreateTime>
- 						 <MsgType><![CDATA[text]]></MsgType>
-  						 <Event><![CDATA[欢迎]]></Event>
-					</xml>";
-					echo $xml;
-				}
-		}
+        if($MsgType=="event"){ //判断数据类型
+            if($Event=="subscribe"){ //判断事件类型
+
+                $userInfo=$this->userInfo($FromUserName);//获取用户昵称
+
+                $one=UserModel::where(['openid'=>$FromUserName])->first();//查询数据库
+                if($one){//判断用户是否是第一次关注
+                    $xml="<xml>
+                      <ToUserName><![CDATA[$FromUserName]]></ToUserName>
+                      <FromUserName><![CDATA[$ToUserName]]></FromUserName>
+                      <CreateTime>time()</CreateTime>
+                      <MsgType><![CDATA[text]]></MsgType>
+                      <Content><![CDATA[你好,欢迎".$userInfo['nickname']."回归]]></Content>
+                    </xml>";//设置发送的xml格式
+                    echo $xml;//返回结果
+                }else{//如果是第一次关注
+                    $array=array(
+                        "openid"=>$userInfo['openid'],
+                        "nickname"=>$userInfo['nickname'],
+                        "city"=>$userInfo['city'],
+                        "province"=>$userInfo['province'],
+                        "country"=>$userInfo['country'],
+                        "headimgurl"=>$userInfo['headimgurl'],
+                        "subscribe_time"=>$userInfo['subscribe_time'],
+                        "sex"=>$userInfo['sex'],
+                    );//设置数组形式的数据类型
+                    $res=UserModel::insertGetId($array);//存入数据库
+                    if($res){//判断是否入库成功
+                        $xml="<xml>
+                      <ToUserName><![CDATA[$FromUserName]]></ToUserName>
+                      <FromUserName><![CDATA[$ToUserName]]></FromUserName>
+                      <CreateTime>time()</CreateTime>
+                      <MsgType><![CDATA[text]]></MsgType>
+                      <Content><![CDATA[你好,欢迎".$userInfo['nickname']."]]></Content>
+                    </xml>";//设置xml格式的数据
+                        echo $xml;//返回结果
+                    }
+                }
+            }
+        }
+
+        echo "SUCCESS";
 	}
 	
 	//获取用户的基本信息
-	public function userinfo($FromUserName){
+	public function userInfo($FromUserName){
 		$url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$this->getAccessToken().'&openid='.$FromUserName.'&lang=zh_CN';
 		$count = file_get_contents($url); //调用URL接口
 		$info = json_decode($count,true); //XML格式转换成数组
