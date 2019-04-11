@@ -34,7 +34,7 @@ class WeixinController extends Controller
             if($Event=="subscribe"){ //判断事件类型
 
                 $userInfo=$this->userInfo($FromUserName);//获取用户昵称
-				
+
                 $one=UserModel::where(['openid'=>$FromUserName])->first();//查询数据库
                 if($one){//判断用户是否是第一次关注
                     $xml="<xml>
