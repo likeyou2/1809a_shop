@@ -46,7 +46,7 @@ class WeixinController extends Controller
                     </xml>";//设置发送的xml格式
                     echo $xml;//返回结果
                 }else{//如果是第一次关注
-                    $array=array(
+                    $array=[
                         "openid"=>$userInfo['openid'],
                         "nickname"=>$userInfo['nickname'],
                         "city"=>$userInfo['city'],
@@ -55,7 +55,7 @@ class WeixinController extends Controller
                         "headimgurl"=>$userInfo['headimgurl'],
                         "subscribe_time"=>$userInfo['subscribe_time'],
                         "sex"=>$userInfo['sex'],
-                    );//设置数组形式的数据类型
+                    ];//设置数组形式的数据类型
                     $res=UserModel::insertGetId($array);//存入数据库
                     if($res){//判断是否入库成功
                         $xml="<xml>
