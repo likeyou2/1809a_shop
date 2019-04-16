@@ -6,7 +6,7 @@ use App\Model\UserModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redis;
-
+use GuzzleHttp\Client;
 class WeixinController extends Controller
 {
 	//
@@ -112,7 +112,7 @@ class WeixinController extends Controller
      */
     public function CustomMenu(){
         $url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token='.$this->getAccessToken();
-        $client = new GuzzleHttp\Client(['base_uri' => $url]);
+        $client = new Client(['base_uri' => $url]);
         $data = [
             "button"    => [
                 [
