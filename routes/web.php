@@ -24,3 +24,7 @@ Route::get('/weixin/access_token','Weixin\WeixinController@getAccessToken');
 
 //获取用户信息
 Route::get('userInfo','Weixin\WeixinController@userinfo');
+
+
+//微信自定义菜单
+Route::get("menu","Weixin\WeixinController@CustomMenu");
