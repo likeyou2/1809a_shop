@@ -74,7 +74,10 @@ class WeixinController extends Controller
             $Content = $objxml->Content;//获取文字内容
             if($Content == "最新商品"){
                 $userInfo=$this->userInfo($FromUserName);//获取用户昵称
-                $xml="<xml>
+                $url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];  //获取域名
+                $img = "$url/img/201902220853424.jpg";  //拼接图片路径
+                $url = "$url/goods";   //拼接跳转路径
+                $xml = "<xml>
                       <ToUserName><![CDATA[$FromUserName]]></ToUserName>
                       <FromUserName><![CDATA[$ToUserName]></FromUserName>
                       <CreateTime>time()</CreateTime>
@@ -84,8 +87,8 @@ class WeixinController extends Controller
                             <item>
                               <Title><![CDATA[商品]]></Title>
                               <Description><![CDATA[鞋子]]></Description>
-                              <PicUrl><![CDATA[]]></PicUrl>
-                              <Url><![CDATA[url]]></Url>
+                              <PicUrl><![CDATA[$img]]></PicUrl>
+                              <Url><![CDATA[$url]]></Url>
                             </item>
                       </Articles>
                 </xml>";
