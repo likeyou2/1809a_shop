@@ -76,7 +76,7 @@ class WeixinController extends Controller
                 $userInfo=$this->userInfo($FromUserName);//获取用户昵称
                 $url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];  //获取域名
                 $img = "$url/img/201902220853424.jpg";  //拼接图片路径
-                $url = "$url/goods";   //拼接跳转路径
+                $ur = "$url/goods";   //拼接跳转路径
                 $xml = "<xml>
                       <ToUserName><![CDATA[$FromUserName]]></ToUserName>
                       <FromUserName><![CDATA[$ToUserName]></FromUserName>
@@ -88,7 +88,7 @@ class WeixinController extends Controller
                               <Title><![CDATA[商品]]></Title>
                               <Description><![CDATA[鞋子]]></Description>
                               <PicUrl><![CDATA[$img]]></PicUrl>
-                              <Url><![CDATA[$url]]></Url>
+                              <Url><![CDATA[$ur]]></Url>
                             </item>
                       </Articles>
                 </xml>";
