@@ -73,29 +73,6 @@ class WeixinController extends Controller
         }else if ($MsgType == 'text') {//用户回复文字消息
             $Content = $objxml->Content;//获取文字内容
             //echo $Content;die;
-            if($Content == "最新商品"){
-                $userInfo=$this->userInfo($FromUserName);//获取用户昵称
-                $url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];  //获取域名
-                $img = "$url/img/201902220853424.jpg";  //拼接图片路径
-                $ur = "$url/goods";   //拼接跳转路径
-                $time = time();  //当前时间戳
-                $xml = "<xml>
-                      <ToUserName><![CDATA[$FromUserName]]></ToUserName>
-                      <FromUserName><![CDATA[$ToUserName]></FromUserName>
-                      <CreateTime>$time</CreateTime>
-                      <MsgType><![CDATA[news]]></MsgType>
-                      <ArticleCount>1</ArticleCount>
-                      <Articles>
-                            <item>
-                              <Title><![CDATA[商品]]></Title>
-                              <Description><![CDATA[鞋子]]></Description>
-                              <PicUrl><![CDATA[$img]]></PicUrl>
-                              <Url><![CDATA[$ur]]></Url>
-                            </item>
-                      </Articles>
-                </xml>";
-                echo $xml;
-            }
             if(strpos($Content,"+天气")){//回复天气
                 $city=mb_substr($Content,0,2);//截取城市名称
                 $url="https://free-api.heweather.net/s6/weather/now?key=HE1904161039381186&location=$city";//调接口
@@ -128,6 +105,29 @@ class WeixinController extends Controller
                     echo $xml;//回复给用户
                 }
 
+
+            }else if ($Content == "最新商品") {
+                $userInfo=$this->userInfo($FromUserName);//获取用户昵称
+                $url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];  //获取域名
+                $img = "$url/img/201902220853424.jpg";  //拼接图片路径
+                $ur = "$url/goods";   //拼接跳转路径
+                $time = time();  //当前时间戳
+                $xml = "<xml>
+                      <ToUserName><![CDATA[$FromUserName]]></ToUserName>
+                      <FromUserName><![CDATA[$ToUserName]></FromUserName>
+                      <CreateTime>$time</CreateTime>
+                      <MsgType><![CDATA[news]]></MsgType>
+                      <ArticleCount>1</ArticleCount>
+                      <Articles>
+                            <item>
+                              <Title><![CDATA[商品]]></Title>
+                              <Description><![CDATA[鞋子]]></Description>
+                              <PicUrl><![CDATA[$img]]></PicUrl>
+                              <Url><![CDATA[$ur]]></Url>
+                            </item>
+                      </Articles>
+                </xml>";
+                echo $xml;
 
             }else {//消息入库
                 $arr = [
