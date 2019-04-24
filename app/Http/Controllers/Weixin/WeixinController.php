@@ -88,6 +88,7 @@ class WeixinController extends Controller
     </item>
   </Articles>
 </xml>";
+                echo $xml;
             }
             if(strpos($Content,"+天气")){//回复天气
                 $city=mb_substr($Content,0,2);//截取城市名称
