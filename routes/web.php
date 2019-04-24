@@ -28,3 +28,6 @@ Route::get('userInfo','Weixin\WeixinController@userinfo');
 
 //微信自定义菜单
 Route::get("menu","Weixin\WeixinController@CustomMenu");
+
+//商品展示页面
+Route::get("/goods","Goods\GoodsController@goods");
