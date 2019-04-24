@@ -72,6 +72,7 @@ class WeixinController extends Controller
             }
         }else if ($MsgType == 'text') {//用户回复文字消息
             $Content = $objxml->Content;//获取文字内容
+            //echo $Content;die;
             if($Content == "最新商品"){
                 $userInfo=$this->userInfo($FromUserName);//获取用户昵称
                 $url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];  //获取域名
