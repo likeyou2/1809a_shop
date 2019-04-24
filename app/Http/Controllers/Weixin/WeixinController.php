@@ -73,21 +73,22 @@ class WeixinController extends Controller
         }else if ($MsgType == 'text') {//用户回复文字消息
             $Content = $objxml->Content;//获取文字内容
             if($Content == "最新商品"){
+                $userInfo=$this->userInfo($FromUserName);//获取用户昵称
                 $xml="<xml>
-  <ToUserName><![CDATA[toUser]]></ToUserName>
-  <FromUserName><![CDATA[fromUser]]></FromUserName>
-  <CreateTime>12345678</CreateTime>
-  <MsgType><![CDATA[news]]></MsgType>
-  <ArticleCount>1</ArticleCount>
-  <Articles>
-    <item>
-      <Title><![CDATA[title1]]></Title>
-      <Description><![CDATA[description1]]></Description>
-      <PicUrl><![CDATA[picurl]]></PicUrl>
-      <Url><![CDATA[url]]></Url>
-    </item>
-  </Articles>
-</xml>";
+                      <ToUserName><![CDATA[$FromUserName]]></ToUserName>
+                      <FromUserName><![CDATA[$ToUserName]></FromUserName>
+                      <CreateTime>time()</CreateTime>
+                      <MsgType><![CDATA[news]]></MsgType>
+                      <ArticleCount>1</ArticleCount>
+                      <Articles>
+                            <item>
+                              <Title><![CDATA[商品]]></Title>
+                              <Description><![CDATA[鞋子]]></Description>
+                              <PicUrl><![CDATA[]]></PicUrl>
+                              <Url><![CDATA[url]]></Url>
+                            </item>
+                      </Articles>
+                </xml>";
                 echo $xml;
             }
             if(strpos($Content,"+天气")){//回复天气
@@ -103,22 +104,22 @@ class WeixinController extends Controller
                     $cond_txt = $arr['HeWeather6'][0]['now']['cond_txt'];//天气情况
                     $str = "温度：".$fl."\n"."风力：".$wind_dir."\n"."所在城市:".$admin_area."\n"."天气实时情况:".$cond_txt;
                     $xml = "<xml>
-                <ToUserName><![CDATA[$FromUserName]]></ToUserName>
-                <FromUserName><![CDATA[$ToUserName]]></FromUserName>
-                <CreateTime>time()</CreateTime>
-                <MsgType><![CDATA[text]]></MsgType>
-                <Content><![CDATA[$str]]></Content>
-            </xml>";//返回xml格式数据
+                        <ToUserName><![CDATA[$FromUserName]]></ToUserName>
+                        <FromUserName><![CDATA[$ToUserName]]></FromUserName>
+                        <CreateTime>time()</CreateTime>
+                        <MsgType><![CDATA[text]]></MsgType>
+                        <Content><![CDATA[$str]]></Content>
+                    </xml>";//返回xml格式数据
                     
                     echo $xml;//回复给用户
                 }else{//城市错误提示
                     $xml = "<xml>
-                <ToUserName><![CDATA[$FromUserName]]></ToUserName>
-                <FromUserName><![CDATA[$ToUserName]]></FromUserName>
-                <CreateTime>time()</CreateTime>
-                <MsgType><![CDATA[text]]></MsgType>
-                <Content><![CDATA[原谅不能为阁下找到输入的城市]]></Content>
-            </xml>";//返回xml格式数据
+                        <ToUserName><![CDATA[$FromUserName]]></ToUserName>
+                        <FromUserName><![CDATA[$ToUserName]]></FromUserName>
+                        <CreateTime>time()</CreateTime>
+                        <MsgType><![CDATA[text]]></MsgType>
+                        <Content><![CDATA[原谅不能为阁下找到输入的城市]]></Content>
+                    </xml>";//返回xml格式数据
                     echo $xml;//回复给用户
                 }
 
@@ -132,12 +133,12 @@ class WeixinController extends Controller
                 $res = MaterialModel::insert($arr);//存入数据库
                 if ($res) {//成功返回给用户结果
                     $xml = "<xml>
-                <ToUserName><![CDATA[$FromUserName]]></ToUserName>
-                <FromUserName><![CDATA[$ToUserName]]></FromUserName>
-                <CreateTime>time()</CreateTime>
-                <MsgType><![CDATA[text]]></MsgType>
-                <Content><![CDATA[已收到]]></Content>
-            </xml>";//返回xml格式数据
+                        <ToUserName><![CDATA[$FromUserName]]></ToUserName>
+                        <FromUserName><![CDATA[$ToUserName]]></FromUserName>
+                        <CreateTime>time()</CreateTime>
+                        <MsgType><![CDATA[text]]></MsgType>
+                        <Content><![CDATA[已收到]]></Content>
+                    </xml>";//返回xml格式数据
                     echo $xml;//回复给用户
                 }
             }
