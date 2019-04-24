@@ -114,7 +114,7 @@ class WeixinController extends Controller
                 $time = time();  //当前时间戳
                 $xml = "<xml>
                       <ToUserName><![CDATA[$FromUserName]]></ToUserName>
-                      <FromUserName><![CDATA[$ToUserName]></FromUserName>
+                      <FromUserName><![CDATA[$ToUserName]]></FromUserName>
                       <CreateTime>$time</CreateTime>
                       <MsgType><![CDATA[news]]></MsgType>
                       <ArticleCount>1</ArticleCount>
@@ -204,7 +204,7 @@ class WeixinController extends Controller
                 }
             }
         }
-        echo "SUCCESS";
+
 }
 	
 	//获取用户的基本信息

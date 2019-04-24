@@ -426,3 +426,17 @@
 <Event><![CDATA[subscribe]]></Event>
 <EventKey><![CDATA[]]></EventKey>
 </xml>
+2019-04-24 14:04:39<xml><ToUserName><![CDATA[gh_e6160c3a110e]]></ToUserName>
+<FromUserName><![CDATA[oo9tb1NtLj99L8o0HFUxWCAfOdqk]]></FromUserName>
+<CreateTime>1556084765</CreateTime>
+<MsgType><![CDATA[text]]></MsgType>
+<Content><![CDATA[最新商品]]></Content>
+<MsgId>22277779360587124</MsgId>
+</xml>
+2019-04-24 14:05:56<xml><ToUserName><![CDATA[gh_e6160c3a110e]]></ToUserName>
+<FromUserName><![CDATA[oo9tb1NtLj99L8o0HFUxWCAfOdqk]]></FromUserName>
+<CreateTime>1556084765</CreateTime>
+<MsgType><![CDATA[text]]></MsgType>
+<Content><![CDATA[最新商品]]></Content>
+<MsgId>22277779360587124</MsgId>
+</xml>
