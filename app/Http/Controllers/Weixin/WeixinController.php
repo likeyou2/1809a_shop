@@ -112,7 +112,6 @@ class WeixinController extends Controller
                 $img = "$url/img/201902220853424.jpg";  //拼接图片路径
                 $ur = "$url/goods";   //拼接跳转路径
                 $time = time();  //当前时间戳
-                echo $time;die;
                 $xml = "<xml>
                       <ToUserName><![CDATA[$FromUserName]]></ToUserName>
                       <FromUserName><![CDATA[$ToUserName]]></FromUserName>
