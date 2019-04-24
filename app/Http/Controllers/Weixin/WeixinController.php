@@ -72,7 +72,23 @@ class WeixinController extends Controller
             }
         }else if ($MsgType == 'text') {//用户回复文字消息
             $Content = $objxml->Content;//获取文字内容
-
+            if($Content == "最新商品"){
+                $xml="<xml>
+  <ToUserName><![CDATA[toUser]]></ToUserName>
+  <FromUserName><![CDATA[fromUser]]></FromUserName>
+  <CreateTime>12345678</CreateTime>
+  <MsgType><![CDATA[news]]></MsgType>
+  <ArticleCount>1</ArticleCount>
+  <Articles>
+    <item>
+      <Title><![CDATA[title1]]></Title>
+      <Description><![CDATA[description1]]></Description>
+      <PicUrl><![CDATA[picurl]]></PicUrl>
+      <Url><![CDATA[url]]></Url>
+    </item>
+  </Articles>
+</xml>";
+            }
             if(strpos($Content,"+天气")){//回复天气
                 $city=mb_substr($Content,0,2);//截取城市名称
                 $url="https://free-api.heweather.net/s6/weather/now?key=HE1904161039381186&location=$city";//调接口
@@ -100,7 +116,7 @@ class WeixinController extends Controller
                 <FromUserName><![CDATA[$ToUserName]]></FromUserName>
                 <CreateTime>time()</CreateTime>
                 <MsgType><![CDATA[text]]></MsgType>
-                <Content><![CDATA[原谅不能为阁下找到城市]]></Content>
+                <Content><![CDATA[原谅不能为阁下找到输入的城市]]></Content>
             </xml>";//返回xml格式数据
                     echo $xml;//回复给用户
                 }
