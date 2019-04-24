@@ -77,10 +77,11 @@ class WeixinController extends Controller
                 $url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];  //获取域名
                 $img = "$url/img/201902220853424.jpg";  //拼接图片路径
                 $ur = "$url/goods";   //拼接跳转路径
+                $time = time();  //当前时间戳
                 $xml = "<xml>
                       <ToUserName><![CDATA[$FromUserName]]></ToUserName>
                       <FromUserName><![CDATA[$ToUserName]></FromUserName>
-                      <CreateTime>time()</CreateTime>
+                      <CreateTime>$time</CreateTime>
                       <MsgType><![CDATA[news]]></MsgType>
                       <ArticleCount>1</ArticleCount>
                       <Articles>
