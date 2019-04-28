@@ -320,4 +320,27 @@ class WeixinController extends Controller
             echo $response_arr['errmsg'];
         }
     }
+
+    //生成参数二维码
+    public function ticket(){
+        $url = 'https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token='.$this->getAccessToken();
+        $arr = [
+            'expire_seconds' => 604800,
+            'action_name' => 'QR_SCENE',
+            'action_info' => [
+                'scene' =>[
+                    'scene_id' => 123,
+                ]
+            ]
+        ];
+        $arr = json_encode($arr , JSON_UNESCAPED_UNICODE);
+        $client = new Client();
+        $response = $client->request("POST",$url,[
+            'body' => $arr
+        ]);
+        $res = $response->getBody();
+        $res = json_decode($res, true);
+        $url2 = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket='.$res['ticket'];
+        header("Location: $url2");
+    }
 }

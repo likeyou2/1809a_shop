@@ -31,3 +31,5 @@ Route::get("menu","Weixin\WeixinController@CustomMenu");
 
 //商品展示页面
 Route::get("/goods","Goods\GoodsController@goods");
+//生成临时参数二维码
+Route::get('/ticket','Weixin\WeixinController@ticket');
