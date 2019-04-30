@@ -15,7 +15,7 @@ class WeixinController extends Controller
 		echo $_GET['echostr'];
 	}
 
-	public function wxEvent(){
+	/*public function wxEvent(){
 		//接受微信服务器推送
 		$content = file_get_contents("php://input");
 
@@ -60,12 +60,12 @@ class WeixinController extends Controller
                     $res=UserModel::insertGetId($array);//存入数据库
                     if($res){//判断是否入库成功
                         $xml="<xml>
-                      <ToUserName><![CDATA[$FromUserName]]></ToUserName>
-                      <FromUserName><![CDATA[$ToUserName]]></FromUserName>
-                      <CreateTime>time()</CreateTime>
-                      <MsgType><![CDATA[text]]></MsgType>
-                      <Content><![CDATA[你好,欢迎".$userInfo['nickname']."]]></Content>
-                    </xml>";//设置xml格式的数据
+                            <ToUserName><![CDATA[$FromUserName]]></ToUserName>
+                            <FromUserName><![CDATA[$ToUserName]]></FromUserName>
+                            <CreateTime>time()</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA[你好,欢迎".$userInfo['nickname']."]]></Content>
+                        </xml>";//设置xml格式的数据
                         echo $xml;//返回结果
                     }
                 }
@@ -206,9 +206,216 @@ class WeixinController extends Controller
             }
         }
 
-}
-	
-	//获取用户的基本信息
+}*/
+
+
+    /**
+     * 接收微信消息推送
+     */
+    public function wx(){
+        // 接收微信消息推送post过来的信息并写入到自定义的log日志中
+        $content = file_get_contents('php://input');
+        $time = date('Y-m-d H:i:s');
+        $str = $time.$content."\n";
+        // 检测是否有logs目录，没有就创建
+        is_dir('logs') or mkdir('logs',0777,true);
+        file_put_contents("logs.log",$str,FILE_APPEND);
+
+        // 把xml格式的数据转化成对象格式
+        $xml = simplexml_load_string($content);
+        // 获取openID
+        $openid = $xml->FromUserName;
+        if($xml->MsgType == 'event') {
+            // 获取用户基本信息
+            $userInfo = $this-> getUserInfo($openid);
+
+            // 关注、取消关注事件
+            if($userInfo){
+                // 信息返回并输出
+                $message = $this-> userInfoAdd($xml,$openid,$userInfo);
+            }
+            // 扫描带参数的二维码事件
+//            $message = $this->scan($xml,$openid,$userInfo);
+
+
+        }else{
+            if($xml->MsgType == 'text'){
+                // 判断是否是城市+天气格式
+                if(strpos($xml->Content,'+')) {
+                    // 天气回复
+                    $message = $this->weacherMessage($xml, $time);
+                }else if($xml->Content == '最新商品'){
+                    // 图文回复
+                    $message = $this->news($xml,$time);
+                }else{
+                    // 商品信息回复
+                    $message = $this->goods($xml,$time);
+//                    $message = $this->back($xml,$time);
+                }
+            }else{
+                // 用户消息、素材下载
+                $this-> media($xml,$openid);
+                echo 'success';die;
+            }
+        }
+        echo $message;
+
+    }
+
+    /**
+     * 用户基本消息入库，消息回复
+     * @param $xml
+     * @param $openid
+     * @param $userInfo
+     * @return string
+     */
+    public  function userInfoAdd($xml,$openid,$userInfo){
+        $time = time();
+        if($xml->Event == 'subscribe'){
+            // 查询当前openID数据库是否存在
+            $arr = UserModel::where(['openid' => $openid])->first();
+            if ($arr) {
+
+                // 检测是否取消关注，如取消则修改
+                if($arr['sub_status'] == 0){
+                    UserModel::where(['openid' => $openid])->update(['sub_status' => 1]);
+                }
+                // 已入库，消息回复
+                $message = "<xml>
+                            <ToUserName><![CDATA[$xml->FromUserName]]></ToUserName>
+                            <FromUserName><![CDATA[$xml->ToUserName]]></FromUserName>
+                            <CreateTime>$time</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA[欢迎回来，" . $arr['nickname'] . "]]></Content>
+                        </xml>";
+            } else {
+                // 首次关注，消息入库
+                $info = [
+                    'sub_status' => 1,
+                    'openid' => $userInfo['openid'],
+                    'nickname' => $userInfo['nickname'],
+                    'sex' => $userInfo['sex'],
+                    'city' => $userInfo['city'],
+                    'province' => $userInfo['province'],
+                    'country' => $userInfo['country'],
+                    'headimgurl' => $userInfo['headimgurl'],
+                    'subscribe_time' => $userInfo['subscribe_time'],
+                ];
+
+                // 数据入库
+                $res = UserModel::insert($info);
+                if ($res) {
+                    // 消息回复
+                    $message = "<xml>
+                                <ToUserName><![CDATA[$xml->FromUserName]]></ToUserName>
+                                <FromUserName><![CDATA[$xml->ToUserName]]></FromUserName>
+                                <CreateTime>$time</CreateTime>
+                                <MsgType><![CDATA[text]]></MsgType>
+                                <Content><![CDATA[请输入商品名字字样]]></Content>
+                            </xml>";
+                }
+            }
+        }else if($xml->Event == 'unsubscribe'){
+
+            // 用户状态修改为未关注
+            UserModel::where('openid',$openid)->update(['sub_status' => 0]);
+            $message = 'success';
+        }
+        return $message;
+    }
+
+    /**
+     * 获取access_token
+     * @return mixed
+     */
+    public function getAccessToken(){
+        // 检测是否有缓存
+        $key = 'access_token';
+        $token = Redis::get($key);
+        if($token){
+        }else{
+            // 接口调用请求说明
+            $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid= ".env('WX_APPID')."&secret=".env('WX_SECRET');
+            // echo $url;
+
+            // 正常情况下，微信会返回下述JSON数据包给公众号
+            $response = file_get_contents($url);
+            // var_dump($response);
+
+            $arr = json_decode($response,true);
+
+            // 存缓存
+            Redis::set($key,$arr['access_token']);
+            // 缓存存储事件1小时
+            Redis::expire($key,3600);
+
+            $token = $arr['access_token'];
+        }
+        // 返回access_token
+        return $token;
+    }
+
+    public function comeMysql(){
+        // 缓存中获取
+        $key = "serch:goods_name";
+        $name = Redis::get($key);
+        if($name){
+            // 数据入库
+            $res = DB::table('wechar_seach')->insert(['seach_name' =>$name]);
+            if($res){
+                echo 'ok';
+            }else{
+                echo 'no';
+            }
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //获取用户的基本信息
 	public function userInfo($FromUserName){
 		$url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$this->getAccessToken().'&openid='.$FromUserName.'&lang=zh_CN';
 		$count = file_get_contents($url); //调用URL接口
@@ -220,7 +427,7 @@ class WeixinController extends Controller
 
 
 	//获取Access_token
-	public function getAccessToken(){
+	/*public function getAccessToken(){
 		//是否有缓存
 		$key = 'wx_access_token';
         $token = Redis::get($key);
@@ -239,7 +446,7 @@ class WeixinController extends Controller
             $token = $arr['access_token'];
         }
         return $token;
-	}
+	}*/
 
     /**
      * 创建自定义菜单
