@@ -107,7 +107,14 @@ class WeixinController extends Controller
 
 
             }else if($Content =="1"){
-                
+                $xml = "<xml>
+                          <ToUserName><![CDATA[$FromUserName]]></ToUserName>
+                          <FromUserName><![CDATA[$ToUserName]]></FromUserName>
+                          <CreateTime>time()</CreateTime>
+                          <MsgType><![CDATA[text]]></MsgType>
+                          <Content><![CDATA[2]]></Content>
+                    </xml>";
+                echo $xml;
             }else if ($Content == "最新商品") {
                 $userInfo=$this->userInfo($FromUserName);//获取用户昵称
                 $url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];  //获取域名
