@@ -15,9 +15,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 //微信配置
-Route::get('valid','Weixin\WeixinController@valid');
+Route::any('valid','Weixin\WeixinController@valid');
 
-Route::post('valid','Weixin\WeixinController@wx');
+Route::any('valid','Weixin\WeixinController@wxEvent');
 
 //access_token
 Route::get('/weixin/access_token','Weixin\WeixinController@getAccessToken');
