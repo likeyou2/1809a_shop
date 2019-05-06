@@ -81,7 +81,7 @@ class WeixinController extends Controller
                       <ToUserName><![CDATA[$FromUserName]]></ToUserName>
                       <FromUserName><![CDATA[$ToUserName]]></FromUserName>
                       <CreateTime>time()</CreateTime>
-                      <MsgType><![CDATA[text]]></MsgType>s
+                      <MsgType><![CDATA[text]]></MsgType>
                       <Content><![CDATA[$str]]></Content>
                     </xml>";
                     echo $xml;
