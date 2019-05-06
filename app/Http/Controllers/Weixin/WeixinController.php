@@ -31,81 +31,61 @@ class WeixinController extends Controller
         $Event=$objxml->Event;          //事件
 
 
-        if($MsgType=="event"){ //判断数据类型
-            if($Event=="subscribe"){ //判断事件类型
-
-                $userInfo=$this->userInfo($FromUserName);//获取用户昵称
-
-                $one=UserModel::where(['openid'=>$FromUserName])->first();//查询数据库
-                if($one){//判断用户是否是第一次关注
+        if($MsgType=="event" && $Event=="subscribe"){ //判断数据类型
+            $userInfo=$this->userInfo($FromUserName);//获取用户昵称
+            $one=UserModel::where(['openid'=>$FromUserName])->first();//查询数据库
+            if($one){//判断用户是否是第一次关注
+                $xml="<xml>
+                      <ToUserName><![CDATA[$FromUserName]]></ToUserName>
+                      <FromUserName><![CDATA[$ToUserName]]></FromUserName>
+                      <CreateTime>time()</CreateTime>
+                      <MsgType><![CDATA[text]]></MsgType>
+                      <Content><![CDATA[你好,欢迎".$userInfo['nickname']."回归]]></Content>
+                    </xml>";//设置发送的xml格式
+                echo $xml;//返回结果
+            }else{//如果是第一次关注
+                $array=[
+                    "openid"=>$userInfo['openid'],
+                    "nickname"=>$userInfo['nickname'],
+                    "city"=>$userInfo['city'],
+                    "province"=>$userInfo['province'],
+                    "country"=>$userInfo['country'],
+                    "headimgurl"=>$userInfo['headimgurl'],
+                    "subscribe_time"=>$userInfo['subscribe_time'],
+                    "sex"=>$userInfo['sex'],
+                ];//设置数组形式的数据类型
+                $res=UserModel::insertGetId($array);//存入数据库
+                if($res){//判断是否入库成功
                     $xml="<xml>
-                          <ToUserName><![CDATA[$FromUserName]]></ToUserName>
-                          <FromUserName><![CDATA[$ToUserName]]></FromUserName>
-                          <CreateTime>time()</CreateTime>
-                          <MsgType><![CDATA[text]]></MsgType>
-                          <Content><![CDATA[你好,欢迎".$userInfo['nickname']."回归]]></Content>
-                        </xml>";//设置发送的xml格式
+                            <ToUserName><![CDATA[$FromUserName]]></ToUserName>
+                            <FromUserName><![CDATA[$ToUserName]]></FromUserName>
+                            <CreateTime>time()</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA[你好,欢迎".$userInfo['nickname']."]]></Content>
+                        </xml>";//设置xml格式的数据
                     echo $xml;//返回结果
-                }else{//如果是第一次关注
-                    $array=[
-                        "openid"=>$userInfo['openid'],
-                        "nickname"=>$userInfo['nickname'],
-                        "city"=>$userInfo['city'],
-                        "province"=>$userInfo['province'],
-                        "country"=>$userInfo['country'],
-                        "headimgurl"=>$userInfo['headimgurl'],
-                        "subscribe_time"=>$userInfo['subscribe_time'],
-                        "sex"=>$userInfo['sex'],
-                    ];//设置数组形式的数据类型
-                    $res=UserModel::insertGetId($array);//存入数据库
-                    if($res){//判断是否入库成功
-                        $xml="<xml>
-                                <ToUserName><![CDATA[$FromUserName]]></ToUserName>
-                                <FromUserName><![CDATA[$ToUserName]]></FromUserName>
-                                <CreateTime>time()</CreateTime>
-                                <MsgType><![CDATA[text]]></MsgType>
-                                <Content><![CDATA[你好,欢迎".$userInfo['nickname']."]]></Content>
-                            </xml>";//设置xml格式的数据
-                        echo $xml;//返回结果
-                    }
                 }
             }
         }else if ($MsgType == 'text') {//用户回复文字消息
             $Content = $objxml->Content;//获取文字内容
-            //echo $Content;die;
-            if(strpos($Content,"+天气")){//回复天气
-                $city=mb_substr($Content,0,2);//截取城市名称
-                $url="https://free-api.heweather.net/s6/weather/now?key=HE1904161039381186&location=$city";//调接口
-                $json=file_get_contents($url);//获取数据
-                $arr=json_decode($json,true);//变化数组形式数据
-                $status=$arr['HeWeather6'][0]['status'];//判断城市是否正确的条件
-                if($status=="ok"){//城市正确返回天气情况
-                    $fl = $arr['HeWeather6'][0]['now']['fl'];//温度
-                    $admin_area = $arr['HeWeather6'][0]['basic']['admin_area'];//城市
-                    $wind_dir = $arr['HeWeather6'][0]['now']['wind_dir'];//风力
-                    $cond_txt = $arr['HeWeather6'][0]['now']['cond_txt'];//天气情况
-                    $str = "温度：".$fl."\n"."风力：".$wind_dir."\n"."所在城市:".$admin_area."\n"."天气实时情况:".$cond_txt;
-                    $xml = "<xml>
-                            <ToUserName><![CDATA[$FromUserName]]></ToUserName>
-                            <FromUserName><![CDATA[$ToUserName]]></FromUserName>
-                            <CreateTime>time()</CreateTime>
-                            <MsgType><![CDATA[text]]></MsgType>
-                            <Content><![CDATA[$str]]></Content>
-                        </xml>";//返回xml格式数据
-
-                    echo $xml;//回复给用户
-                }else{//城市错误提示
-                    $xml = "<xml>
-                            <ToUserName><![CDATA[$FromUserName]]></ToUserName>
-                            <FromUserName><![CDATA[$ToUserName]]></FromUserName>
-                            <CreateTime>time()</CreateTime>
-                            <MsgType><![CDATA[text]]></MsgType>
-                            <Content><![CDATA[原谅不能为阁下找到输入的城市]]></Content>
-                        </xml>";//返回xml格式数据
-                    echo $xml;//回复给用户
+            if($Content == "天气"){//回复天气
+                $url = "http://api.k780.com/?app=weather.future&weaid=1&&appkey=42242&sign=03ca6c0ebe8fccb9c7b9bea1213ea2b6&format=json";
+                $json = file_get_contents($url);
+                $data = json_decode($json,true);
+                $str="";
+                if($data['success'] == '1'){
+                    foreach ($data['result'] as $k=>$v){
+                        $str .= $v['days']." ".$v['week']." ".$v['citynm']." ".$v['weather']."\n";
+                    }
                 }
-
-
+                $xml = "<xml>
+                      <ToUserName><![CDATA[$FromUserName]]></ToUserName>
+                      <FromUserName><![CDATA[$ToUserName]]></FromUserName>
+                      <CreateTime>time()</CreateTime>
+                      <MsgType><![CDATA[text]]></MsgType>s
+                      <Content><![CDATA[$str]]></Content>
+                    </xml>";
+                echo $xml;
             }else if($Content =="1"){
                 $xml = "<xml>
                           <ToUserName><![CDATA[$FromUserName]]></ToUserName>
@@ -115,30 +95,6 @@ class WeixinController extends Controller
                           <Content><![CDATA[2]]></Content>
                     </xml>";
                 echo $xml;
-            }else if ($Content == "最新商品") {
-                $userInfo=$this->userInfo($FromUserName);//获取用户昵称
-                $url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];  //获取域名
-                $img = "$url/img/201902220853424.jpg";  //拼接图片路径
-                $ur = "$url/goods";   //拼接跳转路径
-                $time = time();  //当前时间戳
-                //print_r($ur);die;
-                $xml = "<xml>
-                          <ToUserName><![CDATA[$FromUserName]]></ToUserName>
-                          <FromUserName><![CDATA[$ToUserName]]></FromUserName>
-                          <CreateTime>$time</CreateTime>
-                          <MsgType><![CDATA[news]]></MsgType>
-                          <ArticleCount>1</ArticleCount>
-                          <Articles>
-                                <item>
-                                  <Title><![CDATA[商品]]></Title>
-                                  <Description><![CDATA[鞋子]]></Description>
-                                  <PicUrl><![CDATA[$img]]></PicUrl>
-                                  <Url><![CDATA[$ur]]></Url>
-                                </item>
-                          </Articles>
-                    </xml>";
-                echo $xml;
-
             }else {//消息入库
                 $arr = [
                     "type" => $Content,//用户发送的消息内容
