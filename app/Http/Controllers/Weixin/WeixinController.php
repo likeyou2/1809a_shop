@@ -77,15 +77,16 @@ class WeixinController extends Controller
                     foreach ($data['result'] as $k=>$v){
                         $str .= $v['days']." ".$v['week']." ".$v['citynm']." ".$v['weather']."\n";
                     }
-                }
-                $xml = "<xml>
+                    $xml = "<xml>
                       <ToUserName><![CDATA[$FromUserName]]></ToUserName>
                       <FromUserName><![CDATA[$ToUserName]]></FromUserName>
                       <CreateTime>time()</CreateTime>
                       <MsgType><![CDATA[text]]></MsgType>s
                       <Content><![CDATA[$str]]></Content>
                     </xml>";
-                echo $xml;
+                    echo $xml;
+                }
+
             }else if($Content =="1"){
                 $xml = "<xml>
                           <ToUserName><![CDATA[$FromUserName]]></ToUserName>
