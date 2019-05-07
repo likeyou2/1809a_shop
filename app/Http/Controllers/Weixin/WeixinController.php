@@ -133,8 +133,8 @@ class WeixinController extends Controller
                 $data = json_decode($json , true);
                 $msg = $data['text'];
                 echo "<xml>
-                      <ToUserName><![CDATA[toUser]]></ToUserName>
-                      <FromUserName><![CDATA[fromUser]]></FromUserName>
+                      <ToUserName><![CDATA[$FromUserName]]></ToUserName>
+                      <FromUserName><![CDATA[$ToUserName]]></FromUserName>
                       <CreateTime>12345678</CreateTime>
                       <MsgType><![CDATA[text]]></MsgType>
                       <Content><![CDATA[$msg]]></Content>
