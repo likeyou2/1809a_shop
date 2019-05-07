@@ -68,8 +68,14 @@ class WeixinController extends Controller
             }
         }else if ($MsgType == 'text') {//用户回复文字消息
             $Content = $objxml->Content;//获取文字内容
-            if($Content == "天气"){//回复天气
-                $url = "http://api.k780.com/?app=weather.future&weaid=1&&appkey=42242&sign=03ca6c0ebe8fccb9c7b9bea1213ea2b6&format=json";
+            if(strstr($Content,'天气')){//回复天气
+                $city=mb_substr($Content,0,2);
+                if($city == "天气"){
+                    $city = 1;
+                }else{
+                    $city = $city;
+                }
+                $url = "http://api.k780.com/?app=weather.future&weaid=$city&&appkey=42242&sign=03ca6c0ebe8fccb9c7b9bea1213ea2b6&format=json";
                 $json = file_get_contents($url);
                 $data = json_decode($json,true);
                 $str="";
