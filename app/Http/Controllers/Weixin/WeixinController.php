@@ -96,6 +96,15 @@ class WeixinController extends Controller
                           <Content><![CDATA[2]]></Content>
                     </xml>";
                 echo $xml;
+            }else if($Content == "时间"){
+                $date = date('Y-m-d H:i:s');
+                echo $xml = "<xml>
+                      <ToUserName><![CDATA[$FromUserName]]></ToUserName>
+                      <FromUserName><![CDATA[$ToUserName]]></FromUserName>
+                      <CreateTime>time()</CreateTime>
+                      <MsgType><![CDATA[text]]></MsgType>
+                      <Content><![CDATA[$date]]></Content>
+                    </xml>";
             }else {//消息入库
                 $arr = [
                     "type" => $Content,//用户发送的消息内容
