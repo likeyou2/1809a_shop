@@ -118,7 +118,7 @@ class WeixinController extends Controller
                     "time" => time()//入库的时间
                 ];//存成数组格式，等待入库
                 $res = MaterialModel::insert($arr);//存入数据库
-                if ($res) {//成功返回给用户结果
+                /*if ($res) {//成功返回给用户结果
                     $xml = "<xml>
                             <ToUserName><![CDATA[$FromUserName]]></ToUserName>
                             <FromUserName><![CDATA[$ToUserName]]></FromUserName>
@@ -127,7 +127,18 @@ class WeixinController extends Controller
                             <Content><![CDATA[已收到]]></Content>
                         </xml>";//返回xml格式数据
                     echo $xml;//回复给用户
-                }
+                }*/
+                $url="http://www.tuling123.com/openapi/api?key=16388ae7824c47df833db939422ebd06&info=$Content";
+                $json = file_get_contents($url);
+                $data = json_decode($json , true);
+                $msg = $data['text'];
+                echo "<xml>
+                      <ToUserName><![CDATA[toUser]]></ToUserName>
+                      <FromUserName><![CDATA[fromUser]]></FromUserName>
+                      <CreateTime>12345678</CreateTime>
+                      <MsgType><![CDATA[text]]></MsgType>
+                      <Content><![CDATA[$msg]]></Content>
+                    </xml>";
             }
 
         } else if ($MsgType == "image") {//图片存项目，存库
