@@ -144,6 +144,7 @@ class WeixinController extends Controller
 
         }else if($MsgType == "image"){
             $data=MatersModel::orderByRaw("RAND()")->first();//随机查询一条数据
+            var_dump($data);die;
             $media_id=$data->img_media;
             if($media_id) {
                 $xml = "<xml>
