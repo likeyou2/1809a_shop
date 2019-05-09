@@ -18,6 +18,7 @@
                 font-weight: 200;
                 height: 100vh;
                 margin: 0;
+                background-image: url("/img/20190222085302.jpg");
             }
 
             .full-height {

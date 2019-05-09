@@ -12,6 +12,10 @@ Route::group([
 
     $router->get('/', 'HomeController@index');
     $router->resource('/user',PostController::class);
+    $router->resource('/maters',MatersShowController::class);
+    $router->get('/materialAdd','MatersController@index');
+    $router->post('/materialAddDo','MatersController@materialAddDo');
+
 
 
 });

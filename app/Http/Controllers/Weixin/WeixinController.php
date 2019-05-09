@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Weixin;
 
 use App\Model\MaterialModel;
+use App\Model\MatersModel;
 use App\Model\UserModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -25,7 +26,7 @@ class WeixinController extends Controller
 
         $objxml = simplexml_load_string($content);  //吧XML格式转为成对象格式
         $ToUserName=$objxml->ToUserName;     //开发者微信号
-        $FromUserName=$objxml->FromUserName;   //用户的微信号
+        $FromUserName=$objxml->FromUserName;   //用户opendid
         $CreateTime=$objxml->CreateTime;     //时间
         $MsgType=$objxml->MsgType;        //消息类型
         $Event=$objxml->Event;          //事件
@@ -141,60 +142,20 @@ class WeixinController extends Controller
                     </xml>";
             }
 
-        } else if ($MsgType == "image") {//图片存项目，存库
-            $media_id = $objxml->MediaId;//获取图片传输的间名意
-            $access = $this->getAccessToken();//获取access_token
-            $url = "https://api.weixin.qq.com/cgi-bin/media/get?access_token=$access&media_id=$media_id";//接口
-
-            $client = new Client();//实例化Guzzle
-            $response = $client->get($url);//调用方法
-            $headers = $response->getHeaders();//获取响应头
-            $file_info = $headers['Content-disposition'][0];//获取图片名
-            $file_name = rtrim(substr($file_info, -20), '"');//取文件名后20位
-            $img_name = 'weixin/img/' . substr(md5(time() . mt_rand()), 10, 8) . '_' . $file_name;//最后的文件名;
-            $res = Storage::put($img_name, $response->getBody());//使用Storage把图片存入laravel框架中
-            if ($res) {
-                $arr = [
-                    "type" => "storage/app/" . $file_name,//图片的路径
-                    "FromUserName" => $FromUserName,//用户的id
-                    "time" => time()//添加的时间
-                ];
-                $res = MaterialModel::insert($arr);//存入数据库
-                if ($res) {
-                    $xml = "<xml>
-                    <ToUserName><![CDATA[$FromUserName]]></ToUserName>
-                    <FromUserName><![CDATA[$ToUserName]]></FromUserName>
-                    <CreateTime>time()</CreateTime>
-                    <MsgType><![CDATA[text]]></MsgType>
-                    <Content><![CDATA[图片很完美]]></Content>
-                </xml>";//返回xml格式数据
-                    echo $xml;//回复给用户
-                }
-            }
-        } else if ($MsgType == "voice") {
-            $media_id = $objxml->MediaId;//语音的间名意
-            $access = $this->getAccessToken();//获取access_token
-            $url = "https://api.weixin.qq.com/cgi-bin/media/get/jssdk?access_token=$access&media_id=$media_id";//调接口
-            $mp3 = file_get_contents($url);//存入
-            $file_name = time() . mt_rand(11111, 99999) . ".amr";//语音文件名
-            $res = file_put_contents('weixin/voice/' . $file_name, $mp3);//存入框架
-            if ($res) {
-                $arr = [
-                    "type" => "public/weixin/voice" . $file_name,//语音文件路径
-                    "FromUserName" => $FromUserName,//用户的id
-                    "time" => time()//添加的时间
-                ];
-                $res = MaterialModel::insert($arr);//存入数据库
-                if ($res) {
-                    $xml = "<xml>
-                    <ToUserName><![CDATA[$FromUserName]]></ToUserName>
-                    <FromUserName><![CDATA[$ToUserName]]></FromUserName>
-                    <CreateTime>time()</CreateTime>
-                    <MsgType><![CDATA[text]]></MsgType>
-                    <Content><![CDATA[您的声音真好听]]></Content>
-                </xml>";//返回xml格式数据
-                    echo $xml;//回复给用户
-                }
+        }else if($MsgType == "image"){
+            $data=MatersModel::orderByRaw("RAND()")->first();//随机查询一条数据
+            $media_id=$data->img_media;
+            if($media_id) {
+                $xml = "<xml>
+                            <ToUserName><![CDATA[$FromUserName]]></ToUserName>
+                            <FromUserName><![CDATA[$ToUserName]]></FromUserName>
+                            <CreateTime>" . time() . "</CreateTime>
+                            <MsgType><![CDATA[image]]></MsgType>
+                            <Image>
+                            <MediaId><![CDATA[$media_id]]></MediaId>
+                            </Image>
+                        </xml>";
+                echo $xml;
             }
         }
 
@@ -211,7 +172,20 @@ class WeixinController extends Controller
 		$info = json_decode($count,true); //XML格式转换成数组
 		return $info;
 	}
-	
+
+	//临时素材
+	public function material(){
+	    $access=$this->getAccessToken();
+        $url = "https://api.weixin.qq.com/cgi-bin/media/upload?access_token=$access&type=image";
+
+        $url2 = "/wwwroot/1809a_shop/public/img/20190222085424.jpg";
+        $imgPath = new \CURLFile($url2);
+        $data = [
+            'media'=>$imgPath
+        ];
+        $res=$this->curlPost($url,$data);
+        var_dump($res);exit;
+    }
 
 
 
@@ -338,5 +312,28 @@ class WeixinController extends Controller
         $res = json_decode($res, true);
         $url2 = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket='.$res['ticket'];
         header("Location: $url2");
+    }
+
+
+
+    public function curlPost($url,$post_data)
+    {
+        //初始化
+        $curl = curl_init();
+        //设置抓取的url
+        curl_setopt($curl, CURLOPT_URL,$url);
+        //设置获取的信息以文件流的形式返回，而不是直接输出。
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        //设置post方式提交
+        curl_setopt($curl, CURLOPT_POST, 1);
+        //设置post数据
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $post_data);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);//这个是重点。
+        //执行命令
+        $data = curl_exec($curl);
+        //关闭URL请求
+        curl_close($curl);
+        //显示获得的数据
+        return $data;
     }
 }
