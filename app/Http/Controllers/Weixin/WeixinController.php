@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Redis;
 use GuzzleHttp\Client;
 class WeixinController extends Controller
 {
+    public $res1;
 	//
 	public function valid(){
 		echo $_GET['echostr'];
@@ -72,15 +73,14 @@ class WeixinController extends Controller
         }else if ($MsgType == 'text') {//用户回复文字消息
             $Content = $objxml->Content;//获取文字内容
             $array = IncidentModel::where('openid',$FromUserName)->orderBy('time','desc')->first()->toArray();
-            $res1 = "";
             if(time() - $array['time'] < 100 && $array['content'] == "请输入对方姓名"){
                 $data = [
                     'openid' => $FromUserName,
                     'name' => $Content
                 ];
-                $res1 .= LoveModel::insertGetId($data);
+                $this->res1 = LoveModel::insertGetId($data);
                 //var_dump($res1);exit;
-                if($res1){
+                if($this->res1){
                     echo "<xml>
                             <ToUserName><![CDATA[$FromUserName]]></ToUserName>
                             <FromUserName><![CDATA[$ToUserName]]></FromUserName>
@@ -100,7 +100,7 @@ class WeixinController extends Controller
                     'content' => $Content,
                     'time' => time()
                 ];
-                $res = LoveModel::where('openid',$FromUserName)->orwhere(['id'=>$res1])->update($data2);
+                $res = LoveModel::where('openid',$FromUserName)->orwhere('id',$this->res1)->update($data2);
                 if($res){
                     echo "<xml>
                             <ToUserName><![CDATA[$FromUserName]]></ToUserName>
