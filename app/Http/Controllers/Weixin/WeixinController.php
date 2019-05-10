@@ -116,7 +116,7 @@ class WeixinController extends Controller
             }else if(time() - $array['time'] < 200 && $array['content'] == "请输入要查询名字"){
                 $name = LoveModel::where('name',$Content)->first()->toArray();
                 if($name){
-                    $text = "被表白人".$name['name']."表白的次数".$name['count'];
+                    $text = "被表白人:".$name['name']."表白的次数:".$name['count'];
                     echo "<xml>
                             <ToUserName><![CDATA[$FromUserName]]></ToUserName>
                             <FromUserName><![CDATA[$ToUserName]]></FromUserName>
