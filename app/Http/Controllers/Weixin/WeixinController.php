@@ -239,6 +239,7 @@ class WeixinController extends Controller
             $response = file_get_contents($url);
 
             $arr = json_decode($response,true);
+            var_dump($arr);die;
             //缓存 access_token
             Redis::set($key,$arr['access_token']);
             Redis::expire($key,3600); //缓存一小时
