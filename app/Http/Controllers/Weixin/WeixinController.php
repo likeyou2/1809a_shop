@@ -72,7 +72,7 @@ class WeixinController extends Controller
         }else if ($MsgType == 'text') {//用户回复文字消息
             $Content = $objxml->Content;//获取文字内容
             $array = IncidentModel::where('openid',$FromUserName)->orderBy('time','desc')->first()->toArray();
-            if(time() - $array['time'] < 200 && $array['content'] == "请输入对方姓名"){
+            if(time() - $array['time'] < 100 && $array['content'] == "请输入对方姓名"){
                 $data = [
                     'openid' => $FromUserName,
                     'name' => $Content
@@ -93,7 +93,6 @@ class WeixinController extends Controller
                     LoveModel::where('openid',$FromUserName)->where('id',$res1)->update($data2);
                 }
             }
-            var_dump($array);
             if(strstr($Content,'天气')){//回复天气
                 $city=mb_substr($Content,0,-2);
                 if($city == "天气"){
