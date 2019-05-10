@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Weixin;
 
+use App\Model\IncidentModel;
+use App\Model\LoveModel;
 use App\Model\MaterialModel;
 use App\Model\MatersModel;
 use App\Model\UserModel;
@@ -69,6 +71,29 @@ class WeixinController extends Controller
             }
         }else if ($MsgType == 'text') {//用户回复文字消息
             $Content = $objxml->Content;//获取文字内容
+            $array = IncidentModel::where('openid',$FromUserName)->orderBy('time','desc')->first()->toArray();
+            if(time() - $array['time'] < 200 && $array['content'] == "请输入对方姓名"){
+                $data = [
+                    'openid' => $FromUserName,
+                    'name' => $Content
+                ];
+                $res1 = LoveModel::insertGetId($data);
+                if($res1){
+                    echo "<xml>
+                            <ToUserName><![CDATA[$FromUserName]]></ToUserName>
+                            <FromUserName><![CDATA[$ToUserName]]></FromUserName>
+                            <CreateTime>time()</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA[请输入要表白的内容]]></Content>
+                        </xml>";
+                    $data2 = [
+                        'Content' => $Content,
+                        'time' => time()
+                    ];
+                    LoveModel::where('openid',$FromUserName)->where('id',$res1)->update($data2);
+                }
+            }
+            var_dump($array);
             if(strstr($Content,'天气')){//回复天气
                 $city=mb_substr($Content,0,-2);
                 if($city == "天气"){
@@ -160,14 +185,25 @@ class WeixinController extends Controller
         }else if($MsgType == "event" && $Event == "CLICK"){
             $EventKey=$objxml->EventKey;
             if($EventKey == "sendWhite"){
+
                 echo "<xml>
                         <ToUserName><![CDATA[$FromUserName]]></ToUserName>
                         <FromUserName><![CDATA[$ToUserName]]></FromUserName>
                         <CreateTime>time()</CreateTime>
                         <MsgType><![CDATA[text]]></MsgType>
-                        <Content><![CDATA[请输入要表白人的名字]]></Content>
+                        <Content><![CDATA[请输入对方姓名]]></Content>
                     </xml>";
+                $data = [
+                    'openid' => $FromUserName,
+                    'content' => '请输入对方姓名',
+                    'time' => time()
+                ];
+                $res = IncidentModel::insertGetId($data);
+
+
+
             }else if ($EventKey == "selectWhite"){
+
                 echo "<xml>
                         <ToUserName><![CDATA[$FromUserName]]></ToUserName>
                         <FromUserName><![CDATA[$ToUserName]]></FromUserName>
@@ -175,6 +211,9 @@ class WeixinController extends Controller
                         <MsgType><![CDATA[text]]></MsgType>
                         <Content><![CDATA[请输入要查询人的名字]]></Content>
                     </xml>";
+
+
+
             }
         }
 
