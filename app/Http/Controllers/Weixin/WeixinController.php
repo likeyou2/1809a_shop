@@ -72,12 +72,13 @@ class WeixinController extends Controller
         }else if ($MsgType == 'text') {//用户回复文字消息
             $Content = $objxml->Content;//获取文字内容
             $array = IncidentModel::where('openid',$FromUserName)->orderBy('time','desc')->first()->toArray();
+            $res1 = "";
             if(time() - $array['time'] < 100 && $array['content'] == "请输入对方姓名"){
                 $data = [
                     'openid' => $FromUserName,
                     'name' => $Content
                 ];
-                $res1 = LoveModel::insertGetId($data);
+                $res1 .= LoveModel::insertGetId($data);
                 if($res1){
                     echo "<xml>
                             <ToUserName><![CDATA[$FromUserName]]></ToUserName>
