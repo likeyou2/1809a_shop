@@ -190,12 +190,12 @@ class WeixinController extends Controller
                     "sub_button"=>[
                         [
                             "type"=>"click",
-                            "name"=>"查表白",
+                            "name"=>"♥查表白♥",
                             "key"=>"selectWhite"
                         ],
                         [
                             "type"=>"click",
-                            "name"=>"发表白",
+                            "name"=>"♥发表白♥",
                             "key"=>"sendWhite"
                         ],
                     ],
