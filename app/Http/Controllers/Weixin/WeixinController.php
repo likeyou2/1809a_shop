@@ -157,6 +157,25 @@ class WeixinController extends Controller
                         </xml>";
                 echo $xml;
             }
+        }else if($MsgType == "event" && $Event == "CLICK"){
+            $EventKey=$objxml->EventKey;
+            if($EventKey == "sendWhite"){
+                echo "<xml>
+                        <ToUserName><![CDATA[$FromUserName]]></ToUserName>
+                        <FromUserName><![CDATA[$ToUserName]]></FromUserName>
+                        <CreateTime>time()</CreateTime>
+                        <MsgType><![CDATA[text]]></MsgType>
+                        <Content><![CDATA[请输入要表白人的名字]]></Content>
+                    </xml>";
+            }else if ($EventKey == "selectWhite"){
+                echo "<xml>
+                        <ToUserName><![CDATA[$FromUserName]]></ToUserName>
+                        <FromUserName><![CDATA[$ToUserName]]></FromUserName>
+                        <CreateTime>time()</CreateTime>
+                        <MsgType><![CDATA[text]]></MsgType>
+                        <Content><![CDATA[请输入要查询人的名字]]></Content>
+                    </xml>";
+            }
         }
 
     }
