@@ -87,11 +87,18 @@ class WeixinController extends Controller
                             <Content><![CDATA[请输入要表白的内容]]></Content>
                         </xml>";
                     $data2 = [
-                        'Content' => $Content,
+                        'openid' => $FromUserName,
+                        'content' => '请输入要表白的内容',
                         'time' => time()
                     ];
-                    LoveModel::where('openid',$FromUserName)->where('id',$res1)->update($data2);
+                    IncidentModel::insertGetId($data2);
                 }
+            }else if(time() - $array['time'] < 100 && $array['content'] == "请输入要表白的内容"){
+                $data2 = [
+                    'Content' => $Content,
+                    'time' => time()
+                ];
+                LoveModel::where('openid',$FromUserName)->where('id',$res1)->update($data2);
             }
             if(strstr($Content,'天气')){//回复天气
                 $city=mb_substr($Content,0,-2);
