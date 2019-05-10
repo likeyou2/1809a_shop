@@ -96,17 +96,19 @@ class WeixinController extends Controller
                 }
             }else if(time() - $array['time'] < 200 && $array['content'] == "请输入要表白的内容"){
                 $data2 = [
-                    'Content' => $Content,
+                    'content' => $Content,
                     'time' => time()
                 ];
-                LoveModel::where('openid',$FromUserName)->where('id',$res1)->update($data2);
-                echo "<xml>
+                $res = LoveModel::where('openid',$FromUserName)->where('id',$res1)->update($data2);
+                if($res){
+                    echo "<xml>
                             <ToUserName><![CDATA[$FromUserName]]></ToUserName>
                             <FromUserName><![CDATA[$ToUserName]]></FromUserName>
                             <CreateTime>time()</CreateTime>
                             <MsgType><![CDATA[text]]></MsgType>
                             <Content><![CDATA[表白成功]]></Content>
                         </xml>";
+                }
             }
             if(strstr($Content,'天气')){//回复天气
                 $city=mb_substr($Content,0,-2);
