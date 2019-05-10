@@ -100,7 +100,7 @@ class WeixinController extends Controller
                     'content' => $Content,
                     'time' => time()
                 ];
-                $res = LoveModel::where('openid',$FromUserName)->orwhere('id',$this->res1)->update($data2);
+                $res = LoveModel::where(['openid'=>$FromUserName,'id'=>$this->res1])->update($data2);
                 if($res){
                     echo "<xml>
                             <ToUserName><![CDATA[$FromUserName]]></ToUserName>
