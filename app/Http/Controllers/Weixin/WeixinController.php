@@ -95,6 +95,13 @@ class WeixinController extends Controller
                     IncidentModel::insertGetId($data2);
                 }
             }else if(time() - $array['time'] < 200 && $array['content'] == "请输入要表白的内容"){
+                echo "<xml>
+                            <ToUserName><![CDATA[$FromUserName]]></ToUserName>
+                            <FromUserName><![CDATA[$ToUserName]]></FromUserName>
+                            <CreateTime>time()</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA[表白成功]]></Content>
+                        </xml>";die;
                 $data2 = [
                     'content' => $Content,
                     'time' => time()
