@@ -117,7 +117,7 @@ class WeixinController extends Controller
                 $name = LoveModel::where('name',$Content)->first()->toArray();
                 $count=LoveModel::where(['name'=>$Content])->get()->count();//被表白了多少次
                 if($name){
-                    $text = "被表白人:".$name['name']."\n表白的次数:".$count;
+                    $text = "被表白人:".$name['name']."\n表白的次数:".$count."表白内容".$name['coutent'];
                     echo "<xml>
                             <ToUserName><![CDATA[$FromUserName]]></ToUserName>
                             <FromUserName><![CDATA[$ToUserName]]></FromUserName>
