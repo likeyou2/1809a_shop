@@ -95,8 +95,11 @@ class WeixinController extends Controller
                     IncidentModel::insertGetId($data2);
                 }
             }else if(time() - $array['time'] < 200 && $array['content'] == "请输入要表白的内容"){
+                $num = 0;
+                $num ++;
                 $data2 = [
                     'content' => $Content,
+                    'count' =>$num,
                     'time' => time()
                 ];
                 $loveArr = LoveModel::where('openid',$FromUserName)->orderBy('id','desc')->first()->toArray();
@@ -110,6 +113,16 @@ class WeixinController extends Controller
                             <Content><![CDATA[表白成功]]></Content>
                         </xml>";
                 }
+            }else if(time() - $array['time'] < 100 && $array['content'] == "请输入要查询名字"){
+                $name = LoveModel::where('name',$Content)->get()->toArray();
+                $text = "被表白人".$name['name']."表白的次数".$name['count'];
+                echo "<xml>
+                            <ToUserName><![CDATA[$FromUserName]]></ToUserName>
+                            <FromUserName><![CDATA[$ToUserName]]></FromUserName>
+                            <CreateTime>time()</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA[$text]]></Content>
+                        </xml>";
             }
             if(strstr($Content,'天气')){//回复天气
                 $city=mb_substr($Content,0,-2);
@@ -226,9 +239,14 @@ class WeixinController extends Controller
                         <FromUserName><![CDATA[$ToUserName]]></FromUserName>
                         <CreateTime>time()</CreateTime>
                         <MsgType><![CDATA[text]]></MsgType>
-                        <Content><![CDATA[请输入要查询人的名字]]></Content>
+                        <Content><![CDATA[请输入要查询名字]]></Content>
                     </xml>";
-
+                $data = [
+                    'openid' => $FromUserName,
+                    'content' => '请输入要查询名字',
+                    'time' => time()
+                ];
+                $res = IncidentModel::insertGetId($data);
 
 
             }
