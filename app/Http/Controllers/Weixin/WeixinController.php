@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Redis;
 use GuzzleHttp\Client;
 class WeixinController extends Controller
 {
-    public $res1;
 	//
 	public function valid(){
 		echo $_GET['echostr'];
@@ -78,9 +77,9 @@ class WeixinController extends Controller
                     'openid' => $FromUserName,
                     'name' => $Content
                 ];
-                $this->res1 = LoveModel::insertGetId($data);
+                $res1 = LoveModel::insertGetId($data);
                 //var_dump($res1);exit;
-                if($this->res1){
+                if($res1){
                     echo "<xml>
                             <ToUserName><![CDATA[$FromUserName]]></ToUserName>
                             <FromUserName><![CDATA[$ToUserName]]></FromUserName>
@@ -100,7 +99,7 @@ class WeixinController extends Controller
                     'content' => $Content,
                     'time' => time()
                 ];
-                $res = LoveModel::where(['openid'=>$FromUserName,'id'=>$this->res1])->update($data2);
+                $res = LoveModel::where('openid',$FromUserName)->update($data2);
                 if($res){
                     echo "<xml>
                             <ToUserName><![CDATA[$FromUserName]]></ToUserName>
