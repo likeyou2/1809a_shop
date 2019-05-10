@@ -113,8 +113,8 @@ class WeixinController extends Controller
                             <Content><![CDATA[表白成功]]></Content>
                         </xml>";
                 }
-            }else if(time() - $array['time'] < 72000 && $array['content'] == "请输入要查询名字"){
-                $name = LoveModel::where('name',$Content)->frist()->toArray();
+            }else if(time() - $array['time'] < 200 && $array['content'] == "请输入要查询名字"){
+                $name = LoveModel::where('name',$Content)->first()->toArray();
                 if($name){
                     $text = "被表白人".$name['name']."表白的次数".$name['count'];
                     echo "<xml>
