@@ -193,7 +193,7 @@ class WeixinController extends Controller
                 ]
             ],
         ];
-        $data = json_encode($arr);
+        $data = json_encode($arr,JSON_UNESCAPED_UNICODE);
         $res = $this->curlPost($url,$data);
         var_dump($res);
     }
