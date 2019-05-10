@@ -99,7 +99,7 @@ class WeixinController extends Controller
                     'content' => $Content,
                     'time' => time()
                 ];
-                $loveId = LoveModel::where('openid',$FromUserName)->orderBy('id','desc')->lists()->first()->toArray();
+                $loveId = LoveModel::where('openid',$FromUserName)->orderBy('id','desc')->lists('id')->first()->toArray();
                 $res = LoveModel::where(['openid'=>$FromUserName,'id'=>$loveId])->update($data2);
                 if($res){
                     echo "<xml>
