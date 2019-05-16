@@ -151,6 +151,7 @@ class QrCodeController extends Controller
         $post_data = json_encode($post_data);
         $res = $this->curlPost($url,$post_data);
         $res = json_decode($res,true);
+        var_dump($res);
         $url2 = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket='.$res['ticket'];
         $filename = '/qrcode/'.date('Y-m-d-h-i-s').".jpg";
         copy($url2,"imgs$filename");
