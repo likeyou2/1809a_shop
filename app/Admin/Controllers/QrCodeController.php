@@ -186,7 +186,7 @@ class QrCodeController extends Controller
             $arr = json_decode($response,true);
             //缓存 access_token
             Redis::set($key,$arr['access_token']);
-            Redis::expire($key,7000); //缓存一小时
+            Redis::expire($key,6000); //缓存一小时
             $token = $arr['access_token'];
         }
         return $token;
