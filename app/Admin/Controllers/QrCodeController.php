@@ -139,7 +139,6 @@ class QrCodeController extends Controller
         $data = $request->input();
         $channel_cation = $request->input('channel_cation');
         $access = $this->getAccessToken();
-        var_dump($access);die;
         $url = 'https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token='.$access;
         $post_data = [
                 "action_name" => $data['channel_type'],
@@ -152,7 +151,6 @@ class QrCodeController extends Controller
         $post_data = json_encode($post_data);
         $res = $this->curlPost($url,$post_data);
         $res = json_decode($res,true);
-        var_dump($res);die;
         $url2 = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket='.$res['ticket'];
         $filename = '/qrcode/'.date('Y-m-d-h-i-s').".jpg";
         copy($url2,"imgs$filename");
