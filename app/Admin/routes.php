@@ -24,6 +24,7 @@ Route::group([
     //渠道管理 --- 带参数的二维码
     $router->get('/qrCodeAdd','QrCodeController@index');
     $router->post('/qrCodeAddDo','QrCodeController@qrCodeAddDo');
+    $router->get('/qrCodeChartShow','QrcodeShowController@qrCodeChartShow');
     $router->resource('/qrCodeShow',QrcodeShowController::class);
 
 

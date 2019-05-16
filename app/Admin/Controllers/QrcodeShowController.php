@@ -28,6 +28,29 @@ class QrcodeShowController extends Controller
             ->body($this->grid());
     }
 
+
+
+    public function qrCodeChartShow(Content $content)
+    {
+        $data=QrCodeModel::all()->toArray();
+        $name='';
+        $number='';
+        foreach ($data as $key=>$values){
+            $name.="'".$values['qrcode_name']."',";
+            $number.=$values['qrcode_number'].",";
+        }
+        $name=rtrim($name,",");
+        $number=rtrim($number,",");
+        $dataInfo=[
+            'name'=>$name,
+            'number'=>$number
+        ];
+        return $content
+            ->header('Index')
+            ->description('description')
+            ->body(view('qrCode.chartShow',['data'=>$dataInfo]));
+    }
+
     /**
      * Show interface.
      *
