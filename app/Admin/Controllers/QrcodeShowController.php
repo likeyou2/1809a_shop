@@ -88,7 +88,7 @@ class QrcodeShowController extends Controller
         $grid->qrcode_url('Qrcode url')->display(function($img){
             return "<img src='/imgs".$img."' style='width:130px;height:140px;'>";
         });
-        $grid->qrcode_status('Qrcode status');
+//        $grid->qrcode_status('Qrcode status');
 
         return $grid;
     }
