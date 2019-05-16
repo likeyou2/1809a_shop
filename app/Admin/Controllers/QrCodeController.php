@@ -139,6 +139,7 @@ class QrCodeController extends Controller
         $data = $request->input();
         $channel_cation = $request->input('channel_cation');
         $access = $this->getAccessToken();
+        var_dump($access);die;
         $url = 'https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token='.$access;
         $post_data = [
                 "action_name" => $data['channel_type'],
