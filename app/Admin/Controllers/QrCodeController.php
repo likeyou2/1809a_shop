@@ -151,7 +151,6 @@ class QrCodeController extends Controller
         $post_data = json_encode($post_data);
         $res = $this->curlPost($url,$post_data);
         $res = json_decode($res,true);
-        var_dump($res);die;
         $url2 = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket='.$res['ticket'];
         $filename = '/qrcode/'.date('Y-m-d-h-i-s').".jpg";
         copy($url2,"imgs$filename");
@@ -186,7 +185,7 @@ class QrCodeController extends Controller
             $arr = json_decode($response,true);
             //缓存 access_token
             Redis::set($key,$arr['access_token']);
-            Redis::expire($key,1); //缓存一小时
+            Redis::expire($key,7000); //缓存一小时
             $token = $arr['access_token'];
         }
         return $token;
