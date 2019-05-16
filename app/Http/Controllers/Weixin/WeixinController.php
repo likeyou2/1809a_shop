@@ -6,6 +6,7 @@ use App\Model\IncidentModel;
 use App\Model\LoveModel;
 use App\Model\MaterialModel;
 use App\Model\MatersModel;
+use App\Model\QrCodeModel;
 use App\Model\UserModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -36,39 +37,80 @@ class WeixinController extends Controller
 
         if($MsgType=="event" && $Event=="subscribe"){ //判断数据类型
             $userInfo=$this->userInfo($FromUserName);//获取用户昵称
-            $one=UserModel::where(['openid'=>$FromUserName])->first();//查询数据库
-            if($one){//判断用户是否是第一次关注
-                $xml="<xml>
+            if($objxml->EventKey == ""){
+                $one=UserModel::where(['openid'=>$FromUserName])->first();//查询数据库
+                if($one){//判断用户是否是第一次关注
+                    $xml="<xml>
                       <ToUserName><![CDATA[$FromUserName]]></ToUserName>
                       <FromUserName><![CDATA[$ToUserName]]></FromUserName>
                       <CreateTime>time()</CreateTime>
                       <MsgType><![CDATA[text]]></MsgType>
                       <Content><![CDATA[你好,欢迎".$userInfo['nickname']."回归]]></Content>
                     </xml>";//设置发送的xml格式
-                echo $xml;//返回结果
-            }else{//如果是第一次关注
-                $array=[
-                    "openid"=>$userInfo['openid'],
-                    "nickname"=>$userInfo['nickname'],
-                    "city"=>$userInfo['city'],
-                    "province"=>$userInfo['province'],
-                    "country"=>$userInfo['country'],
-                    "headimgurl"=>$userInfo['headimgurl'],
-                    "subscribe_time"=>$userInfo['subscribe_time'],
-                    "sex"=>$userInfo['sex'],
-                ];//设置数组形式的数据类型
-                $res=UserModel::insertGetId($array);//存入数据库
-                if($res){//判断是否入库成功
-                    $xml="<xml>
+                    echo $xml;//返回结果
+                }else{//如果是第一次关注
+                    $array=[
+                        "openid"=>$userInfo['openid'],
+                        "nickname"=>$userInfo['nickname'],
+                        "city"=>$userInfo['city'],
+                        "province"=>$userInfo['province'],
+                        "country"=>$userInfo['country'],
+                        "headimgurl"=>$userInfo['headimgurl'],
+                        "subscribe_time"=>$userInfo['subscribe_time'],
+                        "sex"=>$userInfo['sex'],
+                    ];//设置数组形式的数据类型
+                    $res=UserModel::insertGetId($array);//存入数据库
+                    if($res){//判断是否入库成功
+                        $xml="<xml>
                             <ToUserName><![CDATA[$FromUserName]]></ToUserName>
                             <FromUserName><![CDATA[$ToUserName]]></FromUserName>
                             <CreateTime>time()</CreateTime>
                             <MsgType><![CDATA[text]]></MsgType>
                             <Content><![CDATA[你好,欢迎".$userInfo['nickname']."]]></Content>
                         </xml>";//设置xml格式的数据
-                    echo $xml;//返回结果
+                        echo $xml;//返回结果
+                    }
                 }
+            }else{
+                $EventKey = substr($objxml->EventKey,8);
+                $one=UserModel::where(['openid'=>$FromUserName])->first();//查询数据库
+                if($one){
+                    $res = UserModel::where('openid',$FromUserName)->update(["qrcode_cation" => $EventKey]);
+                    if($res){
+                        echo "<xml>
+                            <ToUserName><![CDATA[$FromUserName]]></ToUserName>
+                            <FromUserName><![CDATA[$ToUserName]]></FromUserName>
+                            <CreateTime>time()</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA[你好,欢迎".$userInfo['nickname']."回归]]></Content>
+                        </xml>";
+                    }
+                }else{
+                    $array=[
+                        "openid" => $userInfo['openid'],
+                        "nickname" => $userInfo['nickname'],
+                        "city" => $userInfo['city'],
+                        "province" => $userInfo['province'],
+                        "country" => $userInfo['country'],
+                        "headimgurl" => $userInfo['headimgurl'],
+                        "subscribe_time" => $userInfo['subscribe_time'],
+                        "sex" => $userInfo['sex'],
+                        "qrcode_cation" => $EventKey
+                    ];//设置数组形式的数据类型
+                    $res = UserModel::insertGetId($array);//存入数据库
+                    if( $res ){
+                        echo "<xml>
+                            <ToUserName><![CDATA[$FromUserName]]></ToUserName>
+                            <FromUserName><![CDATA[$ToUserName]]></FromUserName>
+                            <CreateTime>time()</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA[你好,欢迎".$userInfo['nickname']."]]></Content>
+                        </xml>";
+                    }
+                }
+                QrCodeModel::where(['qrcode_cation'=>$EventKey])->increment('qrcode_number');
             }
+
         }else if ($MsgType == 'text') {//用户回复文字消息
             $Content = $objxml->Content;//获取文字内容
             $array = IncidentModel::where('openid',$FromUserName)->orderBy('time','desc')->first()->toArray();
@@ -210,6 +252,9 @@ class WeixinController extends Controller
                     </xml>";
             }
 
+        }else if($MsgType == "event" && $Event == "unsubscribe"){  //取消关注
+            $EventKey = UserModel::where(['openid'=>$FromUserName])->first()->toArray();
+            QrCodeModel::where(['qrcode_cation'=>$EventKey['qrcode_cation']])->decrement('qrcode_number');
         }else if($MsgType == "image"){
             $data=MatersModel::orderByRaw("RAND()")->first();//随机查询一条数据
             $media_id=$data->img_media;
