@@ -144,7 +144,7 @@ class QrCodeController extends Controller
                 "action_name" => $data['channel_type'],
                 "action_info" => [
                         "scene" => [
-                                "scene_id => $channel_cation"
+                                "scene_id" => $channel_cation
                             ]
                     ]
         ];
