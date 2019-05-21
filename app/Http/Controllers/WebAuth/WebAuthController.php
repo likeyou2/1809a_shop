@@ -7,5 +7,7 @@ use App\Http\Controllers\Controller;
 
 class WebAuthController extends Controller
 {
-    //
+    public function webLogin(){
+        return view('web.webLogin');
+    }
 }
