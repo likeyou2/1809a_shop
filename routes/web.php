@@ -35,3 +35,6 @@ Route::get("/goods","Goods\GoodsController@goods");
 Route::get('/ticket','Weixin\WeixinController@ticket');
 //临时素材
 Route::get('/material','Weixin\WeixinController@material');
+//微信网络授权
+Route::get('/webAuth','Weixin\WeixinController@webAuth');
+Route::get('/webAuthDo','Weixin\WeixinController@webAuthDo');

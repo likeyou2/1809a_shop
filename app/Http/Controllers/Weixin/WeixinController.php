@@ -374,7 +374,15 @@ class WeixinController extends Controller
         var_dump($res);exit;
     }
 
+    //微信网页授权
+    public function webAuth(){
+	    $jump = urlencode(url('http://1809a.ytw00.cn//webAuthDo'));
+	    $url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid='.env('WX_APPID').'&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect';
+    }
 
+    public function webAuthDo(){
+        echo 1;
+    }
 
 	//获取Access_token
 	public function getAccessToken(){

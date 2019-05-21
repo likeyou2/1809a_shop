@@ -13,6 +13,15 @@ Route::group([
     $router->get('/', 'HomeController@index')->name('admin.home');
     //用户
     $router->resource('/user',PostController::class);
+    //标签添加
+    $router->get('/labelAdd','PostController@labelAdd');
+    $router->post('/labelAddDo','PostController@labelAddDo');
+    //标签展示
+    $router->resource('/labelShow',LabelController::class);
+    //给用户添加标签
+    $router->post('/openidAdd','LabelController@openidAdd');
+    //标签删除
+    $router->any('/labelDelete','PostController@labelDelete');
     //素材
     $router->get('/materialAdd','MatersController@index');
     $router->post('/materialAddDo','MatersController@materialAddDo');

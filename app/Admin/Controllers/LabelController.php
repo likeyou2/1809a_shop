@@ -3,8 +3,9 @@
 namespace App\Admin\Controllers;
 
 use App\Model\LabelModel;
-use App\Model\UserModel;
 use App\Http\Controllers\Controller;
+use App\Model\LOModel;
+use App\Model\UserModel;
 use Encore\Admin\Controllers\HasResourceActions;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
@@ -13,7 +14,7 @@ use Encore\Admin\Show;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redis;
 
-class PostController extends Controller
+class LabelController extends Controller
 {
     use HasResourceActions;
 
@@ -30,14 +31,6 @@ class PostController extends Controller
             ->description('description')
             ->body($this->grid());
     }
-    //标签添加视图
-    public function labelAdd(Content $content)
-    {
-        return $content
-            ->header('标签添加视图')
-            ->description('description')
-            ->body(view( 'label.labelAdd' ));
-    }
 
     /**
      * Show interface.
@@ -46,7 +39,7 @@ class PostController extends Controller
      * @param Content $content
      * @return Content
      */
-    public function show($id, Content $content)
+    public function show($id, Content $content )
     {
         return $content
             ->header('Detail')
@@ -90,19 +83,17 @@ class PostController extends Controller
      */
     protected function grid()
     {
-        $grid = new Grid(new UserModel);
+        $grid = new Grid(new LabelModel);
 
         $grid->id('Id');
-        $grid->openid('Openid');
-        $grid->nickname('Nickname');
-        $grid->city('City');
-        $grid->province('Province');
-        $grid->country('Country');
-        $grid->headimgurl('Headimgurl')->display(function($img){
-            return '<img src="'.$img.'">';
+        $grid->label_id('Label id');
+
+        $grid->label_name('Label name');
+        $grid->label_count('Label count');
+        $grid->label_status('Label status');
+        $grid->label_time('Label time')->display(function($data){
+            return date('Y-m-d H:i:s');
         });
-        $grid->subscribe_time('Subscribe time');
-        $grid->sex('Sex');
 
         return $grid;
     }
@@ -115,19 +106,23 @@ class PostController extends Controller
      */
     protected function detail($id)
     {
-        $show = new Show(UserModel::findOrFail($id));
+        $data = UserModel::get();
+        $labelData = LabelModel::where('id',$id)->first();
+        if($labelData){
+            $labelData = LabelModel::where('id',$id)->first()->toArray();
+        }
+        return view('openid.show',['data'=>$data,'labelData'=>$labelData]);
 
+        /*$show = new Show(LabelModel::findOrFail($id));
         $show->id('Id');
-        $show->openid('Openid');
-        $show->nickname('Nickname');
-        $show->city('City');
-        $show->province('Province');
-        $show->country('Country');
-        $show->headimgurl('Headimgurl');
-        $show->subscribe_time('Subscribe time');
-        $show->sex('Sex');
+        $show->label_id('Label id');
 
-        return $show;
+        $show->label_name('Label name');
+        $show->label_count('Label count');
+        $show->label_status('Label status');
+        $show->label_time('Label time');
+
+        return $show;*/
     }
 
     /**
@@ -137,61 +132,48 @@ class PostController extends Controller
      */
     protected function form()
     {
-        $form = new Form(new UserModel);
+        $form = new Form(new LabelModel);
 
-        $form->text('openid', 'Openid');
-        $form->text('nickname', 'Nickname');
-        $form->text('city', 'City');
-        $form->text('province', 'Province');
-        $form->text('country', 'Country');
-        $form->text('headimgurl', 'Headimgurl');
-        $form->number('subscribe_time', 'Subscribe time');
-        $form->number('sex', 'Sex');
+        $form->number('label_id', 'Label id');
+        $form->text('label_name', 'Label name');
+        $form->text('label_count', 'Label count');
+        $form->number('label_status', 'Label status');
+        $form->number('label_time', 'Label time');
 
         return $form;
     }
 
-    //执行标签添加
-    public function labelAddDo(Request $request){
-        $data = $request->input('_name');
+    //给用户添加标签
+    public function openidAdd(Request $request){
         $access = $this->getAccessToken();
-        $data =[
-            'tag'=>[
-                'name'=>$data
-            ]
-        ];
-        $data = json_encode($data,JSON_UNESCAPED_UNICODE);
-        $url = 'https://api.weixin.qq.com/cgi-bin/tags/create?access_token='.$access;
-        $res = $this->curlPost($url,$data);
-        $res = json_decode($res,true);
-        $arr = [
-            'label_id' => $res['tag']['id'],
-            'label_name' => $res['tag']['name'],
-            'label_time' => time()
-        ];
-        $res = LabelModel::insertGetId($arr);
-        if($res){
-            echo "添加成功";exit;
-        }else{
-            echo "添加失败";exit;
+        $data = $request->input();
+        $arr =[];
+        foreach ($data['openid'] as $k=>$v){
+            $arr[$k]['openid'] = $v;
+            $arr[$k]['label_id'] = $data['labelId'];
+        }
+
+        $openid = [];
+        foreach ($arr as $key => $value){
+            $openid[] = $value['openid'];
+            $res = LOModel::insert($value);
+        }
+        if( $res ){
+            $url = 'https://api.weixin.qq.com/cgi-bin/tags/members/batchtagging?access_token='.$access;
+            $post_data = [
+                'openid_list' => $openid,
+                'tagid'=>$data['labelId']
+            ];
+            $post_data = json_encode($post_data);
+            $json = $this->curlPost($url,$post_data);
+            $resData = json_decode($json,true);
+            if($resData['errmsg'] == "ok" ){
+                echo "分配成功";die;
+            }else{
+                echo "分配失败";die;
+            }
         }
     }
-
-
-    //标签删除
-    public function labelDelete(){
-        $access = $this->getAccessToken();
-        $url = 'https://api.weixin.qq.com/cgi-bin/tags/delete?access_token='.$access;
-        $data = [
-            'tag' => [
-                'id' => 108
-            ]
-        ];
-        $data = json_encode($data);
-        $res = $this->curlPost($url,$data);
-        var_dump($res);
-    }
-
 
     //获取Access_token
     public function getAccessToken(){
