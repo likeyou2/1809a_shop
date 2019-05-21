@@ -383,8 +383,9 @@ class WeixinController extends Controller
     }
 
     public function webAuthDo(Request $request){
-        $data = $request->input();
-        var_dump($data);
+        $code = $request->input('code');
+        $url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid='.env('WX_APPID').'&secret='.env('WX_SECRET').'&code='.$code.'&grant_type=authorization_code';
+        $code_access = file_get_contents($url);
     }
 
 	//获取Access_token
