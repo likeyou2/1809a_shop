@@ -378,13 +378,13 @@ class WeixinController extends Controller
     public function webAuth(){
         $webUrl = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
 	    $jump = urlencode($webUrl.'/webAuthDo');
-	    $url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid='.env('WX_APPID').'&redirect_uri='.$jump.'&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+	    $url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid='.env('WX_APPID').'&redirect_uri='.$jump.'&response_type=code&scope=snsapi_base &state=STATE#wechat_redirect';
 	    $code = file_get_contents($url);
-	    var_dump($code);die;
     }
 
-    public function webAuthDo(){
-        echo 1;
+    public function webAuthDo(Request $request){
+        $data = $request->input();
+        var_dump($data);
     }
 
 	//获取Access_token
