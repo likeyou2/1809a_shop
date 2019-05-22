@@ -13,6 +13,7 @@ class WebAuthController extends Controller
     public function webAuthAdd(Request $request){
         $data = $request->input();
         $openid = Session::get('openid');
+        var_dump($openid);die;
         $data .= [
             'openid' => $openid
         ];
