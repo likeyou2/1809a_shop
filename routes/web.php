@@ -26,6 +26,7 @@ Route::get('/weixin/access_token','Weixin\WeixinController@getAccessToken');
 Route::get('userInfo','Weixin\WeixinController@userinfo');
 //授权 登录
 Route::any('/webLogin','WebAuth\WebAuthController@webLogin');
+
 //微信自定义菜单
 Route::get("menu","Weixin\WeixinController@CustomMenu");
 
