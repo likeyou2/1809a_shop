@@ -4,9 +4,9 @@ namespace App\Http\Controllers\WebAuth;
 
 use App\Model\MaterialModel;
 use App\Model\WebUsersModel;
-use Encore\Admin\Middleware\Session;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 
 class WebAuthController extends Controller
 {
