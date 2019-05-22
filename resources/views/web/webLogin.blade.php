@@ -16,11 +16,11 @@
     <div class="login-title"><p>登录</p>
         <i></i>
     </div>
-    <form method="post" action="success.html">
+    <form method="post" action="{{url('/webAuthAdd')}}">
         <div class="login-bar">
             <ul>
-                <li><img src="/images/login_user.png"><input type="text" class="text" name="" placeholder="请输入用户名" /></li>
-                <li><img src="/images/login_pwd.png"><input type="password" class="psd" name="psd" placeholder="请输入确认密码" /></li>
+                <li><img src="/images/login_user.png"><input type="text" class="text" name="name" placeholder="请输入用户名" /></li>
+                <li><img src="/images/login_pwd.png"><input type="password" class="psd" name="pwd" placeholder="请输入确认密码" /></li>
             </ul>
         </div>
         <div class="login-btn">

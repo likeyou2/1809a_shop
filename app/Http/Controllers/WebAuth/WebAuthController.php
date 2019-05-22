@@ -8,9 +8,11 @@ use App\Http\Controllers\Controller;
 
 class WebAuthController extends Controller
 {
-    public function webLogin(){
-        return view('web.webLogin');
+    public function webAuthAdd(Request $request){
+        $data = $request->input();
+        var_dump($data);
     }
+    
     public function webCrontab(){
         $arr = [
             'type'=>'铁碎牙',

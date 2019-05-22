@@ -24,10 +24,9 @@ Route::get('/weixin/access_token','Weixin\WeixinController@getAccessToken');
 
 //获取用户信息
 Route::get('userInfo','Weixin\WeixinController@userinfo');
-//授权 登录
-Route::any('/webLogin','WebAuth\WebAuthController@webLogin');
 //测试计划任务
 Route::any('/webCrontab','WebAuth\WebAuthController@webCrontab');
+
 
 //微信自定义菜单
 Route::get("menu","Weixin\WeixinController@CustomMenu");
@@ -41,3 +40,5 @@ Route::get('/material','Weixin\WeixinController@material');
 //微信网络授权
 Route::get('/webAuth','Weixin\WeixinController@webAuth');
 Route::get('/webAuthDo','Weixin\WeixinController@webAuthDo');
+//授权执行添加
+Route::any('/webAuthAdd','WebAuth\WebAuthController@webAuthAdd');
