@@ -26,7 +26,7 @@
         </div>
         <div class="login-btn">
             <button class="submit" type="submit">登陆</button>
-            <a href="register.html"><div class="login-reg"><p>莫有账号，先注册</p></div></a>
+            {{--<a href="register.html"><div class="login-reg"><p>莫有账号，先注册</p></div></a>--}}
         </div>
     </form>
 </div>

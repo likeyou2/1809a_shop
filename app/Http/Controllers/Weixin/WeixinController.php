@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Redis;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Session;
+
 class WeixinController extends Controller
 {
 	//
@@ -382,10 +384,16 @@ class WeixinController extends Controller
 
     //微信网页授权
     public function webAuth(){
+        $value = Session::get('openid');
+        var_dump($value);die;
+	   /* if (Session::has('openid')){
+
+        }*/
         $webUrl = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
 	    $jump = urlencode($webUrl.'/webAuthDo');
 	    $url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid='.env('WX_APPID').'&redirect_uri='.$jump.'&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
         header("location:".$url);
+        return view('web.webLogin');
     }
 
     public function webAuthDo(Request $request){
@@ -395,6 +403,7 @@ class WeixinController extends Controller
         $code_access = json_decode($code_access,true);
         $url2 = 'https://api.weixin.qq.com/sns/userinfo?access_token='.$code_access['access_token'].'&openid='.$code_access['openid'].'&lang=zh_CN';
         $userInfo = file_get_contents($url2);
+        Session::put('openid', $code_access['openid']);
         var_dump($userInfo);
     }
 
