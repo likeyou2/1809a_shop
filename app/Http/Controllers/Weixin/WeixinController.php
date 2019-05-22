@@ -385,15 +385,15 @@ class WeixinController extends Controller
     //微信网页授权
     public function webAuth(){
         $value = Session::get('openid');
-        var_dump($value);die;
-	   /* if (Session::has('openid')){
 
-        }*/
-        $webUrl = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
-	    $jump = urlencode($webUrl.'/webAuthDo');
-	    $url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid='.env('WX_APPID').'&redirect_uri='.$jump.'&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
-        header("location:".$url);
-        return view('web.webLogin');
+	    if (!empty($value)){
+            return view('web.webLogin');
+        }else{
+            $webUrl = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
+            $jump = urlencode($webUrl.'/webAuthDo');
+            $url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid='.env('WX_APPID').'&redirect_uri='.$jump.'&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect';
+            header("location:".$url);
+        }
     }
 
     public function webAuthDo(Request $request){
