@@ -333,9 +333,14 @@ class WeixinController extends Controller
                     ],
                  ],
                 [
-                    "type"=>"click",
-                    "name"=>"点击2",
-                    "key"=>"12"
+                    "name"=>"微信",
+                    "sub_button"=>[
+                        [
+                            "type"=>"view",
+                            "name"=>"账号绑定",
+                            "url"=>"http://1809a.ytw00.cn/webAuth"
+                        ]
+                    ]
                 ],
                 [
                     "type"=>"click",
@@ -345,6 +350,7 @@ class WeixinController extends Controller
             ],
         ];
         $data = json_encode($arr,JSON_UNESCAPED_UNICODE);
+        //var_dump($data);die;
         $res = $this->curlPost($url,$data);
         var_dump($res);
     }
