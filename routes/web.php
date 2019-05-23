@@ -42,3 +42,6 @@ Route::get('/webAuth','Weixin\WeixinController@webAuth');
 Route::get('/webAuthDo','Weixin\WeixinController@webAuthDo');
 //授权执行添加
 Route::any('/webAuthAdd','WebAuth\WebAuthController@webAuthAdd');
+//访admin登录
+Route::any('/webAdmin','WebAuth\WebAuthController@webAdmin');
+Route::any('/webAdminAdd','WebAuth\WebAuthController@webAdminAdd');

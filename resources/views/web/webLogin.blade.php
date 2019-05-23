@@ -24,7 +24,7 @@
             </ul>
         </div>
         <div class="login-btn">
-            <button class="submit" type="submit">登陆</button>
+            <button class="submit" type="submit">注&nbsp;&nbsp;册</button>
             {{--<a href="register.html"><div class="login-reg"><p>莫有账号，先注册</p></div></a>--}}
         </div>
     </form>

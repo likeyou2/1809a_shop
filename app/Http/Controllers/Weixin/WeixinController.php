@@ -404,8 +404,7 @@ class WeixinController extends Controller
         $url2 = 'https://api.weixin.qq.com/sns/userinfo?access_token='.$code_access['access_token'].'&openid='.$code_access['openid'].'&lang=zh_CN';
         $userInfo = file_get_contents($url2);
         Session::put('openid', $code_access['openid']);
-        $webUrl = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
-        $jump = urlencode($webUrl.'/webAuth');
+        return redirect('/webAuth');
     }
 
 	//获取Access_token
