@@ -60,7 +60,7 @@
                     </div>
                     <div class="b_clear submit">
 
-                        <button type="submit">登&nbsp;&nbsp;录</button>
+                        <button type="button" id="but" style="border:2px solid;border-radius:25px;border:none;color:#fff;font-size:20px;width:150px;height:40px;background-color: #5E2FE7;">登&nbsp;&nbsp;&nbsp;&nbsp;陆</button>
                         <a href="#" class="r_float">忘记密码？</a>
                         <p class="tips hidden">登录失败，请检查您的账户与密码</p>
                     </div>
@@ -109,9 +109,26 @@
                 data:{name:name,pwd:pwd},
                 type:'post',
                 success:function(img){
-                    console.log(img);
+                    alert(img);
                 }
             });
         });
+        $('#but').on('click',function () {
+            var name = $('#name').val();
+            var pwd = $('#pwd').val();
+            var auth_code = $('#auth_code').val();
+            $.ajax({
+                url:"/webAdminAddDo",
+                data:{name:name,pwd:pwd,auth_code:auth_code},
+                type:'post',
+                success:function(img){
+                    if(img == "登录成功"){
+                        window.setTimeout("window.location='/admin'",1000);
+                    }else{
+                        alert(img);
+                    }
+                }
+            })
+        })
     })
 </script>

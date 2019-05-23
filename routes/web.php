@@ -44,4 +44,6 @@ Route::get('/webAuthDo','Weixin\WeixinController@webAuthDo');
 Route::any('/webAuthAdd','WebAuth\WebAuthController@webAuthAdd');
 //访admin登录
 Route::any('/webAdmin','WebAuth\WebAuthController@webAdmin');
+//验证码发送模板消息
 Route::any('/webAdminAdd','WebAuth\WebAuthController@webAdminAdd');
+Route::any('/webAdminAddDo','WebAuth\WebAuthController@webAdminAddDo');

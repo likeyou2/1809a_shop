@@ -55,8 +55,30 @@ class WebAuthController extends Controller
         ];
         $post_data = json_encode($post_data);
         $res = $this->curlPost($url,$post_data);
-        echo "发送成功";die;
+        if($res){
+            Session::put('code',$code);
+            echo "发送成功";
+        }else{
+            echo "发送失败";
+        }
+
     }
+
+    public function webAdminAddDo(Request $request){
+        $data = $request->input();
+        $code = Session::get('code');
+        if($code == $data['auth_code']){
+            $userData = WebUsersModel::where(['name'=>$data['name']])->first()->toArray();
+            if($data['name'] == $userData['name'] && $data['pwd'] == $userData['pwd'] ){
+                echo "登录成功";
+            }else{
+                echo "用户名密码错误";
+            }
+        }else{
+            echo "验证码错误";
+        }
+    }
+
     //获取Access_token
     public function getAccessToken(){
         //是否有缓存
