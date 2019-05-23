@@ -18,7 +18,6 @@ class WebAuthController extends Controller
             'pwd' => $data['pwd'],
             'openid' => $openid
         ];
-        var_dump($data);die;
         WebUsersModel::insertGetId($data);
     }
     
