@@ -86,13 +86,13 @@
         </div>
     </div>
     <div class="footer">
-        <p>Copyright © 2013-2018  <a href="#">赫伟创意星空</a></p>
+        <p>Copyright © 2013-2018  <a href="#">夏末橘子</a></p>
         <!-- <a href="http://www.beian.gov.cn/" target="_blank"><img src="/img/imgs/icons/national_emblem.svg" alt="公安部备案">蒙公网安备15020302000160号</a> -->
-        <a href="#" target="_blank"><img src="/img/imgs/icons/icp_record_filing.svg" alt="工信部备案">蒙ICP备15000557号</a>更多模板：<a href="http://www.mycodes.net/" target="_blank">源码之家</a>
+        <a href="#" target="_blank"><img src="/img/imgs/icons/icp_record_filing.svg" alt="工信部备案">夏末橘子</a>更多模板：<a href="http://www.mycodes.net/" target="_blank">源码之家</a>
     </div>
 </div>
 
-{{--<script src="/js/login.js"></script>--}}
+<script src="/js/login.js"></script>
 </body>
 </html>
 <!--
