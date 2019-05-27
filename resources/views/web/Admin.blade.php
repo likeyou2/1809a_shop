@@ -71,7 +71,6 @@
                     <img src="/img/imgs/qr.png" alt="">
                     <p>请使用微信扫码登录<br>仅支持已绑定微信的账户进行快速登录</p>
                 </div>
-
             </div>
             <div class="login_otherAccount">
                 <span>第三方登录</span>

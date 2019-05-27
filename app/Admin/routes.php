@@ -35,6 +35,8 @@ Route::group([
     $router->post('/qrCodeAddDo','QrCodeController@qrCodeAddDo');
     $router->get('/qrCodeChartShow','QrcodeShowController@qrCodeChartShow');
     $router->resource('/qrCodeShow',QrcodeShowController::class);
-
+    //答题展示
+    $router->get('/anAdd','AnswerController@anAdd');
+    $router->post('/anAddDo','AnswerController@anAddDo');
 
 });

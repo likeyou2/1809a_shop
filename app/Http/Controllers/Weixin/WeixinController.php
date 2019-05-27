@@ -341,6 +341,11 @@ class WeixinController extends Controller
                             "type"=>"view",
                             "name"=>"账号绑定",
                             "url"=>"http://1809a.ytw00.cn/webAuth"
+                        ],
+                        [
+                            "type"=>"click",
+                            "name"=>"答题",
+                            "key"=>"Answer"
                         ]
                     ]
                 ],
