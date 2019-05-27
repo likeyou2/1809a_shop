@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Weixin;
 
+use App\Model\AnswerModel;
 use App\Model\IncidentModel;
+use App\Model\JudgeModel;
 use App\Model\LoveModel;
 use App\Model\MaterialModel;
 use App\Model\MatersModel;
@@ -309,6 +311,25 @@ class WeixinController extends Controller
                 $res = IncidentModel::insertGetId($data);
 
 
+            }else if($EventKey == "Answer"){
+                $data = AnswerModel::orderByRaw("RAND()")->first()->toArray();
+                $dataDB = [
+                    'answer_id' => $data['answer_id'],
+                    'judge_answer' => $data['correct_answer'],
+                    'openid' => $FromUserName,
+                    'time' => time()
+                ];
+                $res = JudgeModel::insertGetId($dataDB);
+                if($res) {
+                    $img = '题目:'.$data['answer_name']."\n".'选: A:'.$data['answer_a'].'  B:'.$data['answer_b'];
+                    echo "<xml>
+                        <ToUserName><![CDATA[$FromUserName]]></ToUserName>
+                        <FromUserName><![CDATA[$ToUserName]]></FromUserName>
+                        <CreateTime>time()</CreateTime>
+                        <MsgType><![CDATA[text]]></MsgType>
+                        <Content><![CDATA[$img]]></Content>
+                    </xml>";
+                }
             }
         }
 
@@ -341,18 +362,18 @@ class WeixinController extends Controller
                             "type"=>"view",
                             "name"=>"账号绑定",
                             "url"=>"http://1809a.ytw00.cn/webAuth"
-                        ],
-                        [
-                            "type"=>"click",
-                            "name"=>"答题",
-                            "key"=>"Answer"
                         ]
                     ]
                 ],
                 [
-                    "type"=>"click",
-                    "name"=>"点击3",
-                    "key"=>"32"
+                    "name"=>"答题",
+                    "sub_button"=>[
+                        [
+                            "type"=>"click",
+                            "name"=>"账号绑定",
+                            "key"=>"Answer"
+                        ]
+                    ]
                 ]
             ],
         ];
