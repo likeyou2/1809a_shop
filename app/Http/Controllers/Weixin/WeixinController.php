@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Weixin;
 
+use App\Model\AchievementModel;
 use App\Model\AnswerModel;
 use App\Model\IncidentModel;
 use App\Model\JudgeModel;
@@ -118,6 +119,7 @@ class WeixinController extends Controller
         }else if ($MsgType == 'text') {//用户回复文字消息
             $Content = $objxml->Content;//获取文字内容
             $array = IncidentModel::where('openid',$FromUserName)->orderBy('time','desc')->first()->toArray();
+            $judgeArray = JudgeModel::where('openid',$FromUserName)->orderBy('time','desc')->first()->toArray();
             if(time() - $array['time'] < 100 && $array['content'] == "请输入对方姓名"){
                 $data = [
                     'openid' => $FromUserName,
@@ -182,6 +184,32 @@ class WeixinController extends Controller
                         </xml>";
                 }
 
+            }else if(time() - $judgeArray['time'] < 200 && trim($array['content']) == trim($judgeArray['judge_name'])){
+                if($Content == $judgeArray['judge_answer']){
+                    $achievement = [
+                        'openid' => $FromUserName,
+                    ];
+                    $achRes = AchievementModel::insertGetId($achievement);
+                    if($achRes){
+                        AchievementModel::increment('achievement_right');
+                        echo "<xml>
+                            <ToUserName><![CDATA[$FromUserName]]></ToUserName>
+                            <FromUserName><![CDATA[$ToUserName]]></FromUserName>
+                            <CreateTime>time()</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA[恭喜您回答正确]]></Content>
+                        </xml>";die;
+                    }
+                }else{
+                    AchievementModel::increment('achievement_mistak');
+                    echo "<xml>
+                            <ToUserName><![CDATA[$FromUserName]]></ToUserName>
+                            <FromUserName><![CDATA[$ToUserName]]></FromUserName>
+                            <CreateTime>time()</CreateTime>
+                            <MsgType><![CDATA[text]]></MsgType>
+                            <Content><![CDATA[抱歉您回答错误]]></Content>
+                        </xml>";die;
+                }
             }
             if(strstr($Content,'天气')){//回复天气
                 $city=mb_substr($Content,0,-2);
@@ -313,12 +341,19 @@ class WeixinController extends Controller
 
             }else if($EventKey == "Answer"){
                 $data = AnswerModel::orderByRaw("RAND()")->first()->toArray();
-                $dataDB = [
+                $dataDB = [   //问题存入库中方便比对
                     'answer_id' => $data['answer_id'],
-                    'judge_answer' => $data['correct_answer'],
                     'openid' => $FromUserName,
+                    'judge_name' =>$data['answer_name'],
+                    'judge_answer' => $data['correct_answer'],
                     'time' => time()
                 ];
+                $incidentDB = [    //记录上一步动作
+                    'openid' => $FromUserName,
+                    'content' => $data['answer_name'],
+                    'time' => time()
+                ];
+                IncidentModel::insertGetId($incidentDB);
                 $res = JudgeModel::insertGetId($dataDB);
                 if($res) {
                     $img = '题目:'.$data['answer_name']."\n".'选: A:'.$data['answer_a'].'  B:'.$data['answer_b'];
@@ -330,6 +365,17 @@ class WeixinController extends Controller
                         <Content><![CDATA[$img]]></Content>
                     </xml>";
                 }
+            }else if($EventKey == "Achievement"){
+                $achievementData=AchievementModel::where('openid',$FromUserName)->first()->toArray();
+                $user = $this->userInfo($FromUserName);
+                $img = '您好:'.$user['nickname'].'; 您共答对:'.$achievementData['achievement_right'].'道题, 答错:'.$achievementData['achievement_mistake'].'道题';
+                echo "<xml>
+                        <ToUserName><![CDATA[$FromUserName]]></ToUserName>
+                        <FromUserName><![CDATA[$ToUserName]]></FromUserName>
+                        <CreateTime>time()</CreateTime>
+                        <MsgType><![CDATA[text]]></MsgType>
+                        <Content><![CDATA[$img]]></Content>
+                    </xml>";
             }
         }
 
@@ -370,8 +416,13 @@ class WeixinController extends Controller
                     "sub_button"=>[
                         [
                             "type"=>"click",
-                            "name"=>"账号绑定",
+                            "name"=>"点击答题",
                             "key"=>"Answer"
+                        ],
+                        [
+                            "type"=>"click",
+                            "name"=>"我的成绩",
+                            "key"=>"Achievement"
                         ]
                     ]
                 ]
