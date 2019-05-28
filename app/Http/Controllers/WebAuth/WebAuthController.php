@@ -79,7 +79,14 @@ class WebAuthController extends Controller
         }
     }
 
-    
+    public function na(){
+        $name = 'ytw';
+        $age = '19';
+        $sign = md5($name.$age.'10a');
+        $url = 'http://47.105.106.201/crontab.php?name='.$name.'&age='.$age.'&sign='.$sign;
+        $res=file_get_contents($url);
+        var_dump($res);
+    }
 
 
     //获取Access_token

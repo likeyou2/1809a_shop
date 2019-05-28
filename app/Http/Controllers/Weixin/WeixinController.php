@@ -339,7 +339,7 @@ class WeixinController extends Controller
                 $res = IncidentModel::insertGetId($data);
 
 
-            }else if($EventKey == "Answer"){
+            }else if($EventKey == "Answer"){   //发送题目
                 $data = AnswerModel::orderByRaw("RAND()")->first()->toArray();
                 $dataDB = [   //问题存入库中方便比对
                     'answer_id' => $data['answer_id'],
@@ -365,7 +365,7 @@ class WeixinController extends Controller
                         <Content><![CDATA[$img]]></Content>
                     </xml>";
                 }
-            }else if($EventKey == "Achievement"){
+            }else if($EventKey == "Achievement"){   //我的答题成绩
                 $achievementData=AchievementModel::where('openid',$FromUserName)->first()->toArray();
                 $user = $this->userInfo($FromUserName);
                 $img = '您好:'.$user['nickname'].'; 您共答对:'.$achievementData['achievement_right'].'道题, 答错:'.$achievementData['achievement_mistake'].'道题';

@@ -47,3 +47,9 @@ Route::any('/webAdmin','WebAuth\WebAuthController@webAdmin');
 //验证码发送模板消息
 Route::any('/webAdminAdd','WebAuth\WebAuthController@webAdminAdd');
 Route::any('/webAdminAddDo','WebAuth\WebAuthController@webAdminAddDo');
+//测试接口
+Route::any('/na','WebAuth\WebAuthController@na');
+//JsSdk测试
+Route::get('/jsSdk','JsSdk\JsSdkController@jsSdK');
+//jsapi_ticket
+Route::get('/getTicket','JsSdk\JsSdkController@getTicket');
