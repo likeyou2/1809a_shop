@@ -596,8 +596,11 @@ class WeixinController extends Controller
         if($openid){
             if($openid['award_num'] != "3"){
                 $a = rand(1,10);
-                var_dump($a);die;
-                $award_num = AwardModel::increment('award_num');
+                if($a == 5){
+                    $award_num = AwardModel::increment('award_num');
+                }else{
+                    echo "很遗憾没有抽中";
+                }
             }else{
                 echo '同一个用户最多每天可以抽奖三次';
             }
