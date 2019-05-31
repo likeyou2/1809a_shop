@@ -607,8 +607,7 @@ class WeixinController extends Controller
 
     //展示我的优惠卷
     public function award(){
-	    echo 1;
-        /*$openid = Session::get('code_openid');
+        $openid = Session::get('code_openid');
         if (!empty($openid)){
             return view('discounts.award');
         }else{
@@ -616,7 +615,7 @@ class WeixinController extends Controller
             $jump = urlencode($webUrl.'/discountsDo');
             $url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid='.env('WX_APPID').'&redirect_uri='.$jump.'&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect';
             header("location:".$url);
-        }*/
+        }
     }
 
     public function awardDo(Request $request){
