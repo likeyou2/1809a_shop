@@ -567,6 +567,8 @@ class WeixinController extends Controller
     public function discountsDo(Request $request){
 	    $code = $request->input('code');
 	    $url_access_token = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid='.env('WX_APPID').'&secret='.env('WX_SECRET').'&code='.$code.'&grant_type=authorization_code';
-	    var_dump($url_access_token);
+        $code_access = file_get_contents($url_access_token);
+        $code_access = json_decode($code_access,true);
+        var_dump($code_access);die;
     }
 }
