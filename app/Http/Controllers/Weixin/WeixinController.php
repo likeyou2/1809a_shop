@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Weixin;
 
 use App\Model\AchievementModel;
 use App\Model\AnswerModel;
+use App\Model\AwardModel;
 use App\Model\IncidentModel;
 use App\Model\JudgeModel;
 use App\Model\LoveModel;
@@ -577,5 +578,24 @@ class WeixinController extends Controller
         $code_access = file_get_contents($url_access_token);
         $code_access = json_decode($code_access,true);
         Session::put('code_openid', $code_access['openid']);
+        $arr = [
+            'openid' =>$code_access['openid'],
+        ];
+        AwardModel::insertGetId($arr);
+    }
+
+    public function discountsAward(){
+        $openid = Session::get('code_openid');
+        $openid = AwardModel::where('openid',$openid)->first();
+        if($openid){
+            if($openid['award_num'] != "3"){
+                $award_num = AwardModel::increment('award_num');
+            }else{
+                echo '同一个用户最多每天可以抽奖三次';
+            }
+
+        }else{
+            echo '错误';
+        }
     }
 }
