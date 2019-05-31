@@ -38,5 +38,8 @@ Route::group([
     //答题展示
     $router->get('/anAdd','AnswerController@anAdd');
     $router->post('/anAddDo','AnswerController@anAddDo');
+    //优惠卷
+    $router->get('/discounts','DiscountsController@discountsShow');
+    $router->post('/discountsAdd','DiscountsController@discountsAdd');
 
 });

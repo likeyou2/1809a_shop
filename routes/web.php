@@ -53,3 +53,8 @@ Route::any('/na','WebAuth\WebAuthController@na');
 Route::get('/jsSdk','JsSdk\JsSdkController@jsSdK');
 //jsapi_ticket
 Route::get('/getTicket','JsSdk\JsSdkController@getTicket');
+//优惠卷 抽奖
+Route::get('/discounts','Weixin\WeixinController@discounts');
+Route::get('/discountsDo','Weixin\WeixinController@discountsDo');
+
+

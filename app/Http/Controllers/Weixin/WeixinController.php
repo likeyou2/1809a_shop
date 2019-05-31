@@ -77,6 +77,9 @@ class WeixinController extends Controller
                     }
                 }
             }else{
+
+
+
                 $EventKey = substr($objxml->EventKey,8);
                 $one=UserModel::where(['openid'=>$FromUserName])->first();//查询数据库
                 if($one){
@@ -402,12 +405,12 @@ class WeixinController extends Controller
                     ],
                  ],
                 [
-                    "name"=>"微信",
+                    "name"=>"优惠卷",
                     "sub_button"=>[
                         [
                             "type"=>"view",
-                            "name"=>"账号绑定",
-                            "url"=>"http://1809a.ytw00.cn/webAuth"
+                            "name"=>"领取优惠卷",
+                            "url"=>"http://1809a.ytw00.cn/discounts"
                         ]
                     ]
                 ],
@@ -550,5 +553,19 @@ class WeixinController extends Controller
         curl_close($curl);
         //显示获得的数据
         return $data;
+    }
+
+    //优惠卷  获取用户Openid
+    public function discounts(){
+        $webUrl = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
+	    $jump = urlencode($webUrl.'/discountsDo');
+	    $url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid='.env('WX_APPID').'&redirect_uri='.$jump.'&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect'
+        
+        return view('discounts.discountsAward');
+    }
+
+    public function discountsDo(Request $request){
+	    $data = $request->input();
+	    var_dump($data);
     }
 }
