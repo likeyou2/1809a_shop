@@ -609,7 +609,7 @@ class WeixinController extends Controller
     public function award(){
         $openid = Session::get('code_openid');
 	    $data = AwardModel::where('openid',$openid)->first();
-        $arr = AwardDiscountsModel::where('award_id',$data['award_id'])->toArray();
+        $arr = AwardDiscountsModel::where('award_id',$data['award_id'])->get()->toArray();
         var_dump($arr);die;
 	    return view('discounts.award');
     }
