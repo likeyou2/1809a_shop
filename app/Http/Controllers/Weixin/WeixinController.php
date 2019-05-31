@@ -560,8 +560,8 @@ class WeixinController extends Controller
         $webUrl = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
 	    $jump = urlencode($webUrl.'/discountsDo');
 	    $url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid='.env('WX_APPID').'&redirect_uri='.$jump.'&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect'
-        
-        return view('discounts.discountsAward');
+
+        //return view('discounts.discountsAward');
     }
 
     public function discountsDo(Request $request){
