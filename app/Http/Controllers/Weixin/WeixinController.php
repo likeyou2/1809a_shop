@@ -595,6 +595,8 @@ class WeixinController extends Controller
         $openid = AwardModel::where('openid',$openid)->first();
         if($openid){
             if($openid['award_num'] != "3"){
+                $a = rand(1,10);
+                var_dump($a);die;
                 $award_num = AwardModel::increment('award_num');
             }else{
                 echo '同一个用户最多每天可以抽奖三次';
@@ -610,7 +612,7 @@ class WeixinController extends Controller
         $openid = Session::get('code_openid');
 	    $data = AwardModel::where('openid',$openid)->first();
         $arr = AwardDiscountsModel::where('award_id',$data['award_id'])->get()->toArray();
-        var_dump($arr);die;
+
 	    return view('discounts.award');
     }
 
