@@ -57,6 +57,6 @@ Route::get('/getTicket','JsSdk\JsSdkController@getTicket');
 Route::get('/discounts','Weixin\WeixinController@discounts');
 Route::get('/discountsDo','Weixin\WeixinController@discountsDo');
 //点击抽奖
-Route::get('/discountsAward','Weixin\WeixinController@discountsAward');
+Route::post('/discountsAward','Weixin\WeixinController@discountsAward');
 
 
