@@ -557,11 +557,18 @@ class WeixinController extends Controller
 
     //优惠卷  获取用户Openid
     public function discounts(){
-        $webUrl = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
-	    $jump = urlencode($webUrl.'/discountsDo');
-	    $url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid='.env('WX_APPID').'&redirect_uri='.$jump.'&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect';
-        header("location:".$url);
-        //return view('discounts.discountsAward');
+        $value = Session::get('openid');
+
+        if (!empty($value)){
+            return view('discounts.discountsAward');
+        }else{
+            $webUrl = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
+            $jump = urlencode($webUrl.'/discountsDo');
+            $url = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid='.env('WX_APPID').'&redirect_uri='.$jump.'&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect';
+            header("location:".$url);
+        }
+
+
     }
 
     public function discountsDo(Request $request){
@@ -569,6 +576,6 @@ class WeixinController extends Controller
 	    $url_access_token = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid='.env('WX_APPID').'&secret='.env('WX_SECRET').'&code='.$code.'&grant_type=authorization_code';
         $code_access = file_get_contents($url_access_token);
         $code_access = json_decode($code_access,true);
-        var_dump($code_access);die;
+        Session::put('code_openid', $code_access['openid']);
     }
 }
