@@ -58,5 +58,7 @@ Route::get('/discounts','Weixin\WeixinController@discounts');
 Route::get('/discountsDo','Weixin\WeixinController@discountsDo');
 //点击抽奖
 Route::post('/discountsAward','Weixin\WeixinController@discountsAward');
-
+//展示我的优惠卷
+Route::get('/award','Weixin\WeixinController@award');
+Route::get('/awardDo','Weixin\WeixinController@awardDo');
 
