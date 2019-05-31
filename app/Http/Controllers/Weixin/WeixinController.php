@@ -607,9 +607,11 @@ class WeixinController extends Controller
 
     //展示我的优惠卷
     public function award(){
-
-            return view('discounts.award');
-
+        $openid = Session::get('code_openid');
+	    $data = AwardModel::where('openid',$openid)->first();
+        $arr = AwardDiscountsModel::where('award_id',$data['award_id']);
+        var_dump($arr);die;
+	    return view('discounts.award');
     }
 
 }
