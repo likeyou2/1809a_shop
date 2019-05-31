@@ -557,7 +557,7 @@ class WeixinController extends Controller
 
     //优惠卷  获取用户Openid
     public function discounts(){
-        $value = Session::get('openid');
+        $value = Session::get('code_openid');
 
         if (!empty($value)){
             return view('discounts.discountsAward');
